@@ -1,14 +1,15 @@
-from mesa.visualization.ModularVisualization import ModularServer
-from mesa.visualization.modules import ChartModule
-
 from model import SiteModel
+# import matplotlib.pyplot as plt
 
-chart = ChartModule([], data_collector_name='datacollector')
+number_of_users = 3
+number_of_steps = 1
 
-model_params = {}
 
-server = ModularServer(SiteModel, [chart], "Site Model", model_params)
+model = SiteModel(number_of_users)
+for _ in range(number_of_steps):
+    model.step()
 
-from server import server
-server.port = 8521 # The default
-server.launch()
+# agent_comments = [a.comments for a in model.schedule.agents]
+# plt.hist(agent_comments)
+# plt.show()
+
