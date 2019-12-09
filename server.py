@@ -3,12 +3,10 @@ import random
 
 from model import SiteModel
 import matplotlib.pyplot as plt
+from config import NUMBER_OF_STEPS, NUMBER_OF_USERS
 
-number_of_users = 100
-number_of_steps = 1
-
-model = SiteModel(number_of_users)
-for _ in range(number_of_steps):
+model = SiteModel(NUMBER_OF_USERS)
+for _ in range(NUMBER_OF_STEPS):
     model.step()
 
 
