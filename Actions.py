@@ -16,13 +16,12 @@ class Reaction(Action):
 
 
 class Post(Action):
-    def __init__(self, attitude, tags, author, text):
+    def __init__(self, attitude, tags, author):
         super().__init__(attitude, author)
         self.tags = tags
         self.comments = []
         self.reactions = []
         self.observers = []
-        self.text = text
 
     def add_comment(self, comment):
         self.comments.append(comment)
