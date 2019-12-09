@@ -1,6 +1,6 @@
 import random
 from mesa import Agent
-from essential_generators import DocumentGenerator
+# from essential_generators import DocumentGenerator # TODO where is this DocumentGenerator?
 from Actions import Post
 import model
 
@@ -8,7 +8,7 @@ import model
 class UserAgent(Agent):
     INITIAL_RELATION_VALUE = 1
     RELATION_DECAY_PER_CYCLE = 0.9
-    gen = DocumentGenerator()
+    # gen = DocumentGenerator()
 
     def __init__(self, unique_id, interests, actions_probabilities, influence, model):
         super().__init__(unique_id, model)
@@ -51,6 +51,7 @@ class UserAgent(Agent):
 
     def add_random_friends(self, num_of_friends):
         new_friends = random.choices(self.model.users, k=0)  # TODO: Why is num_of_friends float?
+        # TODO because we add some initial amount of friends defined in model
         for friend in new_friends:
             self.try_to_become_friends(friend)
 
@@ -62,17 +63,19 @@ class UserAgent(Agent):
 
     def write_comment_to_post(self):
         # TODO add comment to selected post, update relation
-        generated_comment = UserAgent.gen.sentence()
+        # generated_comment = UserAgent.gen.sentence()
         print(self.unique_id, "write comment")
 
     def write_post(self):
         # TODO select topics, send to _friends and to some random users if _influence is high enough
         #   post is sent to everyone if user _influence is equal to 1
         #   post is sent to half of users if user _influence is equal to 0.5 etc
-        generated_text = UserAgent.gen.paragraph()
+        # generated_text = UserAgent.gen.paragraph()
         new_post = Post(attitude=['?'], author=self,
                         tags=random.choices(model.SiteModel.tags, k=random.randint(0, len(model.SiteModel.tags))),
-                        text=generated_text)  # TODO: Random tags, what about attidute?
+                        text="no text because no generator")  # TODO: Random tags, what about attidute?
+        # TODO I think attutude can by calculated from interests (tags)
+        #   eg. if tags are dog, cat and dog:1, cat:0.5 attitude = ceil((1 + 0.5)/2)
         self._posts.append(new_post)
         print(self.unique_id, "write post")
 
