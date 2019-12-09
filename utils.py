@@ -5,7 +5,8 @@ from config import TAGS, ACTIONS
 
 def define_user_interests():
     exp = list(np.random.normal(0, 1, len(TAGS)))
-    values = [float(value) / 3 if abs(float(value) / 3) <= 1 else round(float(value) / 3) for value in exp]
+    values = [float(value) / 3 if abs(float(value) / 3) <=
+              1 else round(float(value) / 3) for value in exp]
     return {tag: values.pop() for tag in TAGS}
 
 

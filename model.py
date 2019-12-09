@@ -17,7 +17,8 @@ class SiteModel(Model):
         self.num_agents = num_agents
         self.schedule = RandomActivation(self)
         self.exp = np.random.exponential(1, num_agents)
-        self.exp_normalized = [float(value) / max(self.exp) for value in self.exp]
+        self.exp_normalized = [float(value) / max(self.exp)
+                               for value in self.exp]
         self.influence_values = deepcopy(self.exp_normalized)
         self.users = []
 
@@ -25,10 +26,12 @@ class SiteModel(Model):
         for i in range(num_agents):
             user = UserAgent(i,
                              define_user_interests(),
-                             define_user_actions_probabilities(self.exp_normalized),
+                             define_user_actions_probabilities(
+                                 self.exp_normalized),
                              self.define_user_influence(),
                              self)
-            user.add_random_friends(round(random.choice(self.exp_normalized) * num_agents / 3) + 1)
+            user.add_random_friends(
+                round(random.choice(self.exp_normalized) * num_agents / 3) + 1)
             self.schedule.add(user)
             self.users.append(user)
 

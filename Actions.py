@@ -35,5 +35,3 @@ class Post(Action):
     def share_post(self):
         # TODO just copy (?)
         pass
-
-

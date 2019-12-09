@@ -48,7 +48,8 @@ def check_random_user_tags_distribution(number_of_users_to_display):
 
 
 def check__total_user_actions_probabilities():
-    agents_dicts = [a.get_actions_probabilities() for a in model.schedule.agents]
+    agents_dicts = [a.get_actions_probabilities()
+                    for a in model.schedule.agents]
     dict_all = collections.defaultdict(list)
     for action in SiteModel.actions:
         dict_all[action] = []
