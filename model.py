@@ -21,6 +21,7 @@ class SiteModel(Model):
         self.exp = np.random.exponential(1, num_agents)
         self.exp_normalized = [float(value) / max(self.exp) for value in self.exp]
         self.influence_values = deepcopy(self.exp_normalized)
+        self.users = []
 
         # Create users
         for i in range(num_agents):
@@ -31,6 +32,7 @@ class SiteModel(Model):
                              self)
             user.add_random_friends(round(random.choice(self.exp_normalized) * num_agents/3) + 1)
             self.schedule.add(user)
+            self.users.append(user)
 
         self.datacollector = DataCollector(model_reporters={})
 

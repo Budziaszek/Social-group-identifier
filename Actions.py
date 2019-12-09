@@ -16,20 +16,22 @@ class Reaction(Action):
 
 
 class Post(Action):
-    def __init__(self, attitude, tags, author):
+    def __init__(self, attitude, tags, author, text):
         super().__init__(attitude, author)
         self.tags = tags
         self.comments = []
         self.reactions = []
         self.observers = []
+        self.text = text
 
     def add_comment(self, comment):
-        # TODO add comment and inform users (who added post, who commented post etc)
-        pass
+        self.comments.append(comment)
 
     def add_reaction(self, reaction):
-        # TODO add reaction and inform users (who added post, who commented post etc)
-        pass
+        self.reactions.append(reaction)
+
+    def add_observer(self, user):
+        self.observers.append(user)
 
     def share_post(self):
         # TODO just copy (?)
