@@ -86,7 +86,7 @@ class UserAgent(Agent):
         self._posts[post_id].add_reaction(reaction)
 
     def append_comment(self, post_id, comment):
-        self._posts[post_id].add_comment(comment)+
+        self._posts[post_id].add_comment(comment)
 
     def append_observer(self, post_id, user):
         self._posts[post_id].add_observer(user)
