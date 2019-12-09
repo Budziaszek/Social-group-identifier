@@ -17,6 +17,7 @@ class SiteModel(Model):
         self.running = True
         self.num_agents = num_agents
         self.schedule = RandomActivation(self)
+        self.users = []
 
         # Create users
         for i in range(num_agents):
@@ -27,6 +28,7 @@ class SiteModel(Model):
                              self)
             user.add_random_friends(random()*num_agents - 1)
             self.schedule.add(user)
+            self.users.append(user)
 
         self.datacollector = DataCollector(model_reporters={})
 
