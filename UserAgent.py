@@ -19,6 +19,15 @@ class UserAgent(Agent):
                          "react": self.react_to_post,
                          "share_post": self.share_post}
 
+    def get_interests(self):
+        return self._interests
+
+    def get_influence(self):
+        return self._influence
+
+    def get_actions_probabilities(self):
+        return self._actions_probabilities
+
     def update_relation(self, user):
         # TODO Update relation with user
         pass

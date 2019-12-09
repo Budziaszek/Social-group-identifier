@@ -1,5 +1,6 @@
-from random import random
-
+import random
+from copy import deepcopy
+import numpy as np
 from mesa import Model
 from mesa.time import RandomActivation
 from mesa.datacollection import DataCollector
@@ -17,6 +18,9 @@ class SiteModel(Model):
         self.running = True
         self.num_agents = num_agents
         self.schedule = RandomActivation(self)
+        self.exp = np.random.exponential(1, num_agents)
+        self.exp_normalized = [float(value) / max(self.exp) for value in self.exp]
+        self.influence_values = deepcopy(self.exp_normalized)
 
         # Create users
         for i in range(num_agents):
@@ -25,25 +29,30 @@ class SiteModel(Model):
                              self.define_user_actions_probabilities(),
                              self.define_user_influence(),
                              self)
-            user.add_random_friends(random()*num_agents - 1)
+            user.add_random_friends(round(random.choice(self.exp_normalized) * num_agents/3) + 1)
             self.schedule.add(user)
 
         self.datacollector = DataCollector(model_reporters={})
 
-    @staticmethod
-    def define_user_influence():
-        # TODO adjust the distribution of values (low number of influential users expected)
-        return random()
+    def define_user_influence(self):
+        return self.influence_values.pop()
 
     @staticmethod
     def define_user_interests():
-        # TODO adjust the distribution of values
-        return {tag: random() * 2 - 1 for tag in SiteModel.tags}
+        exp = list(np.random.normal(0, 1, len(SiteModel.tags)))
+        values = [float(value) / 3 if abs(float(value) / 3) <= 1 else round(float(value) / 3) for value in exp]
+        return {tag: values.pop() for tag in SiteModel.tags}
 
-    @staticmethod
-    def define_user_actions_probabilities():
-        # TODO adjust the distribution of values
-        return {action: random() for action in SiteModel.actions}
+    def define_user_actions_probabilities(self):
+        d = {}
+        for action in SiteModel.actions:
+            v = random.choice(self.exp_normalized) * 2
+            if action is "react":
+                v *= 1.5
+            elif action is "share_post":
+                v *= 0.7
+            d[action] = v if abs(v) <= 1 else 1
+        return d
 
     def step(self):
         print("\nNew cycle")
