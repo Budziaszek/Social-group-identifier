@@ -2,7 +2,7 @@ import random
 from mesa import Agent
 from Actions import Post
 import model
-from config import TAGS, ACTIONS, INITIAL_RELATION_VALUE, RELATION_DECAY_PER_CYCLE
+from config import TAGS, INITIAL_RELATION_VALUE, RELATION_DECAY_PER_CYCLE
 
 
 class UserAgent(Agent):

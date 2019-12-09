@@ -4,7 +4,7 @@ import numpy as np
 from mesa import Model
 from mesa.time import RandomActivation
 from mesa.datacollection import DataCollector
-from config import TAGS, ACTIONS
+from utils import define_user_interests, define_user_actions_probabilities
 from UserAgent import UserAgent
 
 
@@ -24,11 +24,11 @@ class SiteModel(Model):
         # Create users
         for i in range(num_agents):
             user = UserAgent(i,
-                             self.define_user_interests(),
-                             self.define_user_actions_probabilities(),
+                             define_user_interests(),
+                             define_user_actions_probabilities(self.exp_normalized),
                              self.define_user_influence(),
                              self)
-            user.add_random_friends(round(random.choice(self.exp_normalized) * num_agents/3) + 1)
+            user.add_random_friends(round(random.choice(self.exp_normalized) * num_agents / 3) + 1)
             self.schedule.add(user)
             self.users.append(user)
 
@@ -36,23 +36,6 @@ class SiteModel(Model):
 
     def define_user_influence(self):
         return self.influence_values.pop()
-
-    @staticmethod
-    def define_user_interests():
-        exp = list(np.random.normal(0, 1, len(TAGS)))
-        values = [float(value) / 3 if abs(float(value) / 3) <= 1 else round(float(value) / 3) for value in exp]
-        return {tag: values.pop() for tag in TAGS}
-
-    def define_user_actions_probabilities(self):
-        d = {}
-        for action in ACTIONS:
-            v = random.choice(self.exp_normalized) * 2
-            if action is "react":
-                v *= 1.5
-            elif action is "share_post":
-                v *= 0.7
-            d[action] = v if abs(v) <= 1 else 1
-        return d
 
     def step(self):
         print("\nNew cycle")
