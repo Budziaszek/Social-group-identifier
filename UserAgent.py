@@ -2,6 +2,8 @@ import random
 from mesa import Agent
 from Actions import Post
 import model
+from config import TAGS, ACTIONS, INITIAL_RELATION_VALUE, RELATION_DECAY_PER_CYCLE
+
 
 class UserAgent(Agent):
 
@@ -38,11 +40,11 @@ class UserAgent(Agent):
 
     def decrease_connections(self):
         for user in self._relations.keys():
-            self._relations[user] *= UserAgent.RELATION_DECAY_PER_CYCLE
+            self._relations[user] *= RELATION_DECAY_PER_CYCLE
 
     def add_friend(self, user):
         self._friends.append(user)
-        self._relations[user] = UserAgent.INITIAL_RELATION_VALUE
+        self._relations[user] = INITIAL_RELATION_VALUE
 
     def add_random_friends(self, num_of_friends):
         new_friends = random.choices(self.model.users, k=0)  # TODO: Why is num_of_friends float?
@@ -66,8 +68,8 @@ class UserAgent(Agent):
         #   post is sent to everyone if user _influence is equal to 1
         #   post is sent to half of users if user _influence is equal to 0.5 etc
         new_post = Post(attitude=['?'], author=self,
-                        tags=random.choices(model.SiteModel.tags, k=random.randint(0, len(
-                            model.SiteModel.tags))))  # TODO: Random tags, what about attidute?
+                        tags=random.choices(TAGS, k=random.randint(0, len(
+                            TAGS))))  # TODO: Random tags, what about attidute?
         # TODO I think attutude can by calculated from interests (tags)
         #   eg. if tags are dog, cat and dog:1, cat:0.5 attitude = ceil((1 + 0.5)/2)
         self._posts.append(new_post)

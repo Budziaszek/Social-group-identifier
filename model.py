@@ -4,13 +4,11 @@ import numpy as np
 from mesa import Model
 from mesa.time import RandomActivation
 from mesa.datacollection import DataCollector
-
+from config import TAGS, ACTIONS
 from UserAgent import UserAgent
 
 
 class SiteModel(Model):
-    tags = ["dog", "cat", "lama"]
-    actions = ["write_comment", "write_post", "react", "share_post"]
 
     def __init__(self, num_agents):
         super().__init__()
@@ -41,13 +39,13 @@ class SiteModel(Model):
 
     @staticmethod
     def define_user_interests():
-        exp = list(np.random.normal(0, 1, len(SiteModel.tags)))
+        exp = list(np.random.normal(0, 1, len(TAGS)))
         values = [float(value) / 3 if abs(float(value) / 3) <= 1 else round(float(value) / 3) for value in exp]
-        return {tag: values.pop() for tag in SiteModel.tags}
+        return {tag: values.pop() for tag in TAGS}
 
     def define_user_actions_probabilities(self):
         d = {}
-        for action in SiteModel.actions:
+        for action in ACTIONS:
             v = random.choice(self.exp_normalized) * 2
             if action is "react":
                 v *= 1.5
