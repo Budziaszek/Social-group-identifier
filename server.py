@@ -3,7 +3,7 @@ import random
 
 from model import SiteModel
 import matplotlib.pyplot as plt
-from config import NUMBER_OF_STEPS, NUMBER_OF_USERS
+from config import NUMBER_OF_STEPS, NUMBER_OF_USERS, TAGS, ACTIONS
 
 model = SiteModel(NUMBER_OF_USERS)
 for _ in range(NUMBER_OF_STEPS):
@@ -20,7 +20,7 @@ def check_influence_distribution():
 def check_total_tags_distribution():
     agents_dicts = [a.get_interests() for a in model.schedule.agents]
     agents_dicts_sum = {}
-    for tag in SiteModel.tags:
+    for tag in TAGS:
         agents_dicts_sum[tag] = sum(abs(d[tag]) for d in agents_dicts)
     plt.title("Sum of tag interests (abs)")
     plt.bar(agents_dicts_sum.keys(), agents_dicts_sum.values())
@@ -30,7 +30,7 @@ def check_total_tags_distribution():
 def check_distribution_by_tag():
     agents_dicts = [a.get_interests() for a in model.schedule.agents]
     dict_all = collections.defaultdict(list)
-    for tag in SiteModel.tags:
+    for tag in TAGS:
         dict_all[tag] = []
         for d in agents_dicts:
             dict_all[tag].append(d[tag])
@@ -51,7 +51,7 @@ def check__total_user_actions_probabilities():
     agents_dicts = [a.get_actions_probabilities()
                     for a in model.schedule.agents]
     dict_all = collections.defaultdict(list)
-    for action in SiteModel.actions:
+    for action in ACTIONS:
         dict_all[action] = []
         for d in agents_dicts:
             dict_all[action].append(d[action])

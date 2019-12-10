@@ -47,9 +47,7 @@ class UserAgent(Agent):
         self._relations[user] = INITIAL_RELATION_VALUE
 
     def add_random_friends(self, num_of_friends):
-        # TODO: Why is num_of_friends float?
-        new_friends = random.choices(self.model.users, k=0)
-        # TODO because we add some initial amount of friends defined in model
+        new_friends = random.choices(self.model.users, k=num_of_friends)
         for friend in new_friends:
             self.try_to_become_friends(friend)
 
