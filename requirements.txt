@@ -1,3 +1,6 @@
+matplotlib
+mesa
+numpy
 flake8
 autopep8
 pylint

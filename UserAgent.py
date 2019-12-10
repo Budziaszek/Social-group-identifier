@@ -2,7 +2,7 @@ import random
 from mesa import Agent
 from Actions import Post
 import model
-from config import TAGS, INITIAL_RELATION_VALUE, RELATION_DECAY_PER_CYCLE
+from config import TAGS, INITIAL_RELATION_VALUE, RELATION_DECAY_PER_CYCLE, MIN_CHANCE_FOR_FRIENDS
 
 
 class UserAgent(Agent):
@@ -51,11 +51,19 @@ class UserAgent(Agent):
         for friend in new_friends:
             self.try_to_become_friends(friend)
 
+    @property
+    def friends(self):
+        return self._friends
+
     def try_to_become_friends(self, user):
-        # TODO check if user become friend with given user, use add_friend
-        #   gaining new _friends depends on mutual _friends,
-        #   probability of becoming _friends is always higher than 0
-        pass
+        if user in self._friends:
+            return
+        mutual_friends = set(self._friends).intersection(user.friends)
+        mutual_length = len(mutual_friends)
+        mutual_friends_addition = mutual_length * 0.01 + MIN_CHANCE_FOR_FRIENDS
+        if mutual_friends_addition > random.random():
+            self.add_friend(user)
+            user.add_friend(self)
 
     def write_comment_to_post(self):
         # TODO add comment to selected post, update relation
