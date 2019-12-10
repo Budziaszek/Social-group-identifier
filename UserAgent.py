@@ -99,6 +99,8 @@ class UserAgent(Agent):
             r = random.random()
             if r <= probability:
                 self._actions[action]()
+                break  # !Only one action performed during step
+
         for user in self.model.schedule.agents:
             self.try_to_become_friends(user)
         self.decrease_connections()
