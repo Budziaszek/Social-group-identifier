@@ -132,7 +132,7 @@ class UserAgent(Agent):
 
     def step(self):
         actions: list = list(self._actions_probabilities)
-        
+
         for action in random.sample(actions, len(actions)):
             probability = self._actions_probabilities[action]
             r = random.random()
