@@ -1,6 +1,7 @@
 import numpy as np
 import random
-from config import TAGS, ACTIONS
+from config import TAGS
+from action_types import ACTIONS
 
 
 def define_user_interests():

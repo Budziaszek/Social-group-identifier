@@ -33,5 +33,4 @@ class Post(Action):
         self.observers.append(user)
 
     def share_post(self):
-        # TODO just copy (?)
         pass

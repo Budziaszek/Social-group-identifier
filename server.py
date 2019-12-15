@@ -3,7 +3,8 @@ import random
 
 from model import SiteModel
 import matplotlib.pyplot as plt
-from config import NUMBER_OF_STEPS, NUMBER_OF_USERS, TAGS, ACTIONS
+from config import NUMBER_OF_STEPS, NUMBER_OF_USERS, TAGS
+from action_types import ACTIONS
 
 model = SiteModel(NUMBER_OF_USERS)
 for _ in range(NUMBER_OF_STEPS):

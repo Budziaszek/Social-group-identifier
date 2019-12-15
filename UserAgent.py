@@ -1,8 +1,9 @@
 import random
 from mesa import Agent
+from copy import deepcopy
 from Actions import Post, Reaction, Comment
-import model
-from config import TAGS, INITIAL_RELATION_VALUE, RELATION_DECAY_PER_CYCLE, MIN_CHANCE_FOR_FRIENDS, REACT, WRITE_COMMENT
+from config import TAGS, INITIAL_RELATION_VALUE, RELATION_DECAY_PER_CYCLE, MIN_CHANCE_FOR_FRIENDS
+from action_types import REACT, WRITE_COMMENT, SHARE_POST
 
 
 class UserAgent(Agent):
@@ -114,11 +115,22 @@ class UserAgent(Agent):
             self.update_relation(friend, REACT)
             break
 
-        # TODO react to selected post, update relation
         print(self.unique_id, "react")
 
     def share_post(self):
-        # TODO share selected post, update relation
+        """Randomly go through friends and choose random post to share
+           Add shared to its own list of posts
+           Update relations between friends
+        """
+        for friend in random.sample(self._friends, len(self._friends)):
+            post: Post = friend.get_random_post()
+            if not post:
+                continue
+            self._posts.append(post)
+            friend.update_relation(self, SHARE_POST)
+            self.update_relation(friend, SHARE_POST)
+            break
+
         print(self.unique_id, "share post")
 
     def append_react(self, post_id, reaction):
