@@ -131,7 +131,9 @@ class UserAgent(Agent):
         self._posts[post_id].add_observer(user)
 
     def step(self):
-        for action in self._actions_probabilities:
+        actions: list = list(self._actions_probabilities)
+        
+        for action in random.sample(actions, len(actions)):
             probability = self._actions_probabilities[action]
             r = random.random()
             if r <= probability:
