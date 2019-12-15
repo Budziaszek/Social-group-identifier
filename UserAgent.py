@@ -1,8 +1,8 @@
 import random
 from mesa import Agent
-from Actions import Post, Reaction
+from Actions import Post, Reaction, Comment
 import model
-from config import TAGS, INITIAL_RELATION_VALUE, RELATION_DECAY_PER_CYCLE, MIN_CHANCE_FOR_FRIENDS, REACT
+from config import TAGS, INITIAL_RELATION_VALUE, RELATION_DECAY_PER_CYCLE, MIN_CHANCE_FOR_FRIENDS, REACT, WRITE_COMMENT
 
 
 class UserAgent(Agent):
@@ -71,7 +71,19 @@ class UserAgent(Agent):
             user.add_friend(self)
 
     def write_comment_to_post(self):
-        # TODO add comment to selected post, update relation
+        """Randomly go through friends and choose random post to comment
+           Add Comment to post with unique_id and interests for first tag from post
+           Update relations between friends
+        """
+        for friend in random.sample(self._friends, len(self._friends)):
+            post: Post = friend.get_random_post()
+            if not post:
+                continue
+            post.add_comment(
+                Comment(self._interests[post.tags[0]], self.unique_id))
+            friend.update_relation(self, WRITE_COMMENT)
+            self.update_relation(friend, WRITE_COMMENT)
+            break
 
         print(self.unique_id, "write comment")
 
