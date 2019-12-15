@@ -1,8 +1,8 @@
 import random
 from mesa import Agent
-from Actions import Post
+from Actions import Post, Reaction
 import model
-from config import TAGS, INITIAL_RELATION_VALUE, RELATION_DECAY_PER_CYCLE, MIN_CHANCE_FOR_FRIENDS
+from config import TAGS, INITIAL_RELATION_VALUE, RELATION_DECAY_PER_CYCLE, MIN_CHANCE_FOR_FRIENDS, REACT
 
 
 class UserAgent(Agent):
@@ -37,6 +37,11 @@ class UserAgent(Agent):
 
     def get_actions_probabilities(self):
         return self._actions_probabilities
+
+    def get_random_post(self):
+        if not len(self._posts):
+            return None
+        return random.choice(self._posts)
 
     def decrease_connections(self):
         for user in self._relations.keys():
@@ -75,7 +80,7 @@ class UserAgent(Agent):
         #   post is sent to everyone if user _influence is equal to 1
         #   post is sent to half of users if user _influence is equal to 0.5 etc
         new_post = Post(attitude=['?'], author=self,
-                        tags=random.choices(TAGS, k=random.randint(0, len(
+                        tags=random.choices(TAGS, k=random.randint(1, len(
                             TAGS))))  # TODO: Random tags, what about attidute?
         # TODO I think attutude can by calculated from interests (tags)
         #   eg. if tags are dog, cat and dog:1, cat:0.5 attitude = ceil((1 + 0.5)/2)
@@ -83,6 +88,20 @@ class UserAgent(Agent):
         print(self.unique_id, "write post")
 
     def react_to_post(self):
+        """Randomly go through friends and choose random post to react
+           Add Reaction to post with unique_id and interests for first tag from post
+           Update relations between friends
+        """
+        for friend in random.sample(self._friends, len(self._friends)):
+            post: Post = friend.get_random_post()
+            if not post:
+                continue
+            post.add_reaction(
+                Reaction(self._interests[post.tags[0]], self.unique_id))
+            friend.update_relation(self, REACT)
+            self.update_relation(friend, REACT)
+            break
+
         # TODO react to selected post, update relation
         print(self.unique_id, "react")
 
