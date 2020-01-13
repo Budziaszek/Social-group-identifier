@@ -1,4 +1,6 @@
 import random
+from collections import defaultdict
+
 from mesa import Agent
 from copy import deepcopy
 from Actions import Post, Reaction, Comment
@@ -13,7 +15,7 @@ class UserAgent(Agent):
         self._relations = {}  # weights determining the relationship with users
         self._interests = interests
         self._posts = []  # written _posts
-        self._performed_actions = []
+        self._performed_actions = defaultdict(int)
         self._actions_probabilities = actions_probabilities
         self._influence = influence
         self._friends = []
@@ -55,6 +57,7 @@ class UserAgent(Agent):
         # TODO negative actions (only users from group, all action types)
 
     def get_number_of_comments(self):
+        return [len(x) for x in self.model.users]
         pass
         # TODO number of actions (all users)
 
@@ -103,6 +106,14 @@ class UserAgent(Agent):
         new_friends = random.choices(self.model.users, k=num_of_friends)
         for friend in new_friends:
             self.try_to_become_friends(friend)
+
+    @property
+    def performed_actions(self):
+        return self._performed_actions
+
+    @property
+    def posts(self):
+        return self._posts
 
     @property
     def friends(self):
@@ -197,6 +208,7 @@ class UserAgent(Agent):
             r = random.random()
             if r <= probability:
                 self._actions[action]()
+                self._performed_actions[action] += 1
 
         for user in self.model.schedule.agents:
             self.try_to_become_friends(user)
