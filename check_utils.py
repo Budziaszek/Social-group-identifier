@@ -5,7 +5,7 @@ import operator
 import numpy as np
 import matplotlib.pyplot as plt
 
-from action_types import ACTIONS
+from action_types import ACTIONS, TAGS
 
 
 # check_influence_distribution()
