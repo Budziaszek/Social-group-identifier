@@ -15,7 +15,6 @@ for _ in range(NUMBER_OF_STEPS):
     model.step()
 
 
-
 def check_influence_distribution():
     agent_data = [a.get_influence() for a in model.schedule.agents]
     plt.hist(agent_data)
@@ -73,8 +72,6 @@ def check_number_of_friends_distribution():
     plt.show()
 
 
-model = SiteModel(NUMBER_OF_USERS)
-
 # check_number_of_friends_distribution()
 def plot_data_lengths(data, title, not_too_long_flag=True, xlabel="", ylabel=""):
     bins = np.arange(0, max(data) + 1.5) - 0.5
@@ -91,7 +88,7 @@ def plot_data_lengths(data, title, not_too_long_flag=True, xlabel="", ylabel="")
 def plot_dictionary(dicts, title):
     plt.title(title)
     result = dict(functools.reduce(operator.add,
-         map(collections.Counter, dicts)))
+                                   map(collections.Counter, dicts)))
     lists = sorted(result.items())
     x, y = zip(*lists)
     plt.bar(x, y)
@@ -119,6 +116,3 @@ groups = []  # TODO create groups
 
 for _ in range(len(roles)):
     model.assign_roles_init(groups)
-
-
-
