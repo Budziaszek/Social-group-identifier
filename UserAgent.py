@@ -27,6 +27,9 @@ class UserAgent(Agent):
             "share_post": 2
         }
 
+    def get_number_of_friends(self):
+        return len(self.friends)
+
     def update_relation(self, user, action_type):
         self._relations[user] += self._action_relation_values[action_type]
 

@@ -6,10 +6,6 @@ import matplotlib.pyplot as plt
 from config import NUMBER_OF_STEPS, NUMBER_OF_USERS, TAGS
 from action_types import ACTIONS
 
-model = SiteModel(NUMBER_OF_USERS)
-for _ in range(NUMBER_OF_STEPS):
-    model.step()
-
 
 def check_influence_distribution():
     agent_data = [a.get_influence() for a in model.schedule.agents]
@@ -61,8 +57,24 @@ def check__total_user_actions_probabilities():
         plt.show()
 
 
+def check_number_of_friends_distribution():
+    agent_data = [a.get_number_of_friends() for a in model.schedule.agents]
+    plt.hist(agent_data)
+    plt.title("Number of friends")
+    plt.show()
+
+
+model = SiteModel(NUMBER_OF_USERS)
+
+# check_number_of_friends_distribution()
 # check_influence_distribution()
 # check_total_tags_distribution()
 # check_random_user_tags_distribution(2)
 # check_distribution_by_tag()
 # check__total_user_actions_probabilities()
+
+for _ in range(NUMBER_OF_STEPS):
+    model.step()
+
+
+
