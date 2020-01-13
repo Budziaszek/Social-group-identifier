@@ -7,5 +7,5 @@ MIN_CHANCE_FOR_FRIENDS = 0.015
 TAGS = ["dog", "cat", "lama", "rabbit"]
 
 # Simulation consts
-NUMBER_OF_USERS = 100
+NUMBER_OF_USERS = 1000
 NUMBER_OF_STEPS = 1

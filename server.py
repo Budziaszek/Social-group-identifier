@@ -1,11 +1,19 @@
 import collections
 import random
+import functools
+import operator
 
+from role_types import roles
 from model import SiteModel
 import matplotlib.pyplot as plt
 from config import NUMBER_OF_STEPS, NUMBER_OF_USERS, TAGS
 from action_types import ACTIONS
-from role_types import roles
+import numpy as np
+
+model = SiteModel(NUMBER_OF_USERS)
+for _ in range(NUMBER_OF_STEPS):
+    model.step()
+
 
 
 def check_influence_distribution():
@@ -68,11 +76,41 @@ def check_number_of_friends_distribution():
 model = SiteModel(NUMBER_OF_USERS)
 
 # check_number_of_friends_distribution()
+def plot_data_lengths(data, title, not_too_long_flag=True, xlabel="", ylabel=""):
+    bins = np.arange(0, max(data) + 1.5) - 0.5
+    fig, ax = plt.subplots()
+    plt.title(title)
+    _ = ax.hist(data, bins)
+    if not_too_long_flag:
+        ax.set_xticks(bins + 0.5)
+    plt.xlabel(xlabel)
+    plt.ylabel(ylabel)
+    plt.show()
+
+
+def plot_dictionary(dicts, title):
+    plt.title(title)
+    result = dict(functools.reduce(operator.add,
+         map(collections.Counter, dicts)))
+    lists = sorted(result.items())
+    x, y = zip(*lists)
+    plt.bar(x, y)
+    plt.show()
+
+
 # check_influence_distribution()
 # check_total_tags_distribution()
 # check_random_user_tags_distribution(2)
 # check_distribution_by_tag()
 # check__total_user_actions_probabilities()
+# plot_data_lengths(data=[len(a.posts) for a in model.schedule.agents],
+#                   title="Number of posts")
+# plot_dictionary(dicts=[a.performed_actions for a in model.schedule.agents],
+#                 title="Performed actions")
+# plot_data_lengths(data=[len(a.friends) for a in model.schedule.agents],
+#                   title="Total friends", not_too_long_flag=False,
+#                   xlabel="Number of friends for each user",
+#                   ylabel="Number of users with y friends")
 
 for _ in range(NUMBER_OF_STEPS):
     model.step()
