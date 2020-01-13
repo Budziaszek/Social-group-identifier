@@ -5,6 +5,7 @@ from model import SiteModel
 import matplotlib.pyplot as plt
 from config import NUMBER_OF_STEPS, NUMBER_OF_USERS, TAGS
 from action_types import ACTIONS
+from role_types import roles
 
 
 def check_influence_distribution():
@@ -75,6 +76,11 @@ model = SiteModel(NUMBER_OF_USERS)
 
 for _ in range(NUMBER_OF_STEPS):
     model.step()
+
+groups = []  # TODO create groups
+
+for _ in range(len(roles)):
+    model.assign_roles_init(groups)
 
 
 

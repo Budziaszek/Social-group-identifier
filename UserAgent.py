@@ -30,6 +30,46 @@ class UserAgent(Agent):
     def get_number_of_friends(self):
         return len(self.friends)
 
+    def get_number_of_neighbors_in_group(self, group):
+        pass
+        # TODO neighbors - all who had interaction with user from group
+
+    def get_number_of_neighbors_outside_the_group(self, group):
+        pass
+        # TODO neighbors - all who had interaction with user outside the group
+
+    def get_influence(self, group):
+        pass
+        # TODO influence - sum of all in-edges (only users from group)
+
+    def get_activity(self, group):
+        pass
+        # TODO activity - sum of all out-edges (only users from group)
+
+    def get_number_of_positive_actions(self, group):
+        pass
+        # TODO positive actions (only users from group, all action types)
+
+    def get_number_of_negative_actions(self, group):
+        pass
+        # TODO negative actions (only users from group, all action types)
+
+    def get_number_of_comments(self):
+        pass
+        # TODO number of actions (all users)
+
+    def get_number_of_posts(self):
+        pass
+        # TODO number of actions (all users)
+
+    def get_number_of_shares(self):
+        pass
+        # TODO number of actions (all users)
+
+    def get_number_of_reactions(self):
+        pass
+        # TODO number of actions (all users)
+
     def update_relation(self, user, action_type):
         self._relations[user] += self._action_relation_values[action_type]
 
