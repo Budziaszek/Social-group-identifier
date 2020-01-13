@@ -56,4 +56,4 @@ class SiteModel(Model):
             self.role_agents.append(role_agent)
         RoleAgent.groups = groups
         for agent in self.role_agents:
-            agent.determine_user_roles()
+            agent.determine_users_roles()

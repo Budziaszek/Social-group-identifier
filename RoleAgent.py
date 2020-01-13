@@ -30,16 +30,16 @@ class RoleAgent(Agent):
         activity = RoleAgent.normalize(user.get_activity(group),
                                        min([u.get_activity(group) for u in group]),
                                        max([u.get_activity(group) for u in group]))
-        if self.role is "Spamer":
+        if self.role == "Spamer":
             if influence <= 0.3 and activity >= 0.7:
                 user.add_role(self.role)
-        elif self.role is "Celebryta":
+        elif self.role == "Celebryta":
             if influence >= 0.7 and activity <= 0.3:
                 user.add_role(self.role)
-        elif self.role is "Popularny":
+        elif self.role == "Popularny":
             if influence >= 0.7 and activity >= 0.7:
                 user.add_role(self.role)
-        elif self.role is "Nowy":
+        elif self.role == "Nowy":
             if influence <= 0.3 and activity <= 0.3:
                 user.add_role(self.role)
 
@@ -52,13 +52,13 @@ class RoleAgent(Agent):
                                                      group]),
                                                 max([u.get_number_of_neighbors_outside_the_group(group) for u in
                                                      group]))
-        if self.role is "Koncentrator":
+        if self.role == "Koncentrator":
             if neighbors_in >= 0.7 and neighbors_outside < 0.7:
                 user.add_role(self.role)
-        elif self.role is "Pośrednik":
+        elif self.role == "Pośrednik":
             if neighbors_in < 0.7 and neighbors_outside >= 0.7:
                 user.add_role(self.role)
-        elif self.role is "Wszędobylski":
+        elif self.role == "Wszędobylski":
             if neighbors_in >= 0.7 and neighbors_outside >= 0.7:
                 user.add_role(self.role)
 
@@ -70,13 +70,13 @@ class RoleAgent(Agent):
                                        min([u.get_number_of_negative_actions(group) for u in group]),
                                        max([u.get_number_of_negative_actions(group) for u in group]))
         ratio = positive / negative
-        if self.role is "Narzekacz":
+        if self.role == "Narzekacz":
             if ratio <= 0.3:
                 user.add_role(self.role)
-        elif self.role is "Komplemenciarz":
+        elif self.role == "Komplemenciarz":
             if ratio >= 0.7:
                 user.add_role(self.role)
-        elif self.role is "Neutralny_Zbalansowany":
+        elif self.role == "Neutralny_Zbalansowany":
             if 0.3 < ratio < 0.7:
                 user.add_role(self.role)
 
@@ -86,22 +86,22 @@ class RoleAgent(Agent):
         shares = user.get_number_of_shares()
         reactions = user.get_number_of_reactions()
         total = comments + posts + shares + reactions
-        if self.role is "Lurker":
+        if self.role == "Lurker":
             if (comments + posts) / total <= 0.3:
                 user.add_role(self.role)
-        elif self.role is "Komentujący":
+        elif self.role == "Komentujący":
             if comments / total >= 0.7:
                 user.add_role(self.role)
-        elif self.role is "Piszący":
+        elif self.role == "Piszący":
             if posts / total >= 0.7:
                 user.add_role(self.role)
-        elif self.role is "Udostępniający":
+        elif self.role == "Udostępniający":
             if shares / total >= 0.7:
                 user.add_role(self.role)
-        elif self.role is "Reagujący":
+        elif self.role == "Reagujący":
             if reactions / total >= 0.7:
                 user.add_role(self.role)
-        elif self.role is "Zbalansowany":
+        elif self.role == "Zbalansowany":
             if 0.15 < shares / total < 0.35 and 0.15 < comments / total < 0.35 and 0.15 < posts < 0.35 \
                     and 0.15 < reactions / total < 0.35:
                 user.add_role(self.role)
