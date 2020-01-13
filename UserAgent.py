@@ -70,6 +70,10 @@ class UserAgent(Agent):
         pass
         # TODO number of actions (all users)
 
+    def add_role(self, role):
+        pass
+        # TODO
+
     def update_relation(self, user, action_type):
         self._relations[user] += self._action_relation_values[action_type]
 

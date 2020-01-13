@@ -44,21 +44,31 @@ class RoleAgent(Agent):
                 user.add_role(self.role)
 
     def check_neighbors_role(self, user, group):
-        neighbors_in_group = user.get_number_of_neighbors_in_group(group)
-        neighbors_outside_the_group = user.get_number_of_neighbors_outside_the_group(group)
+        neighbors_in = RoleAgent.normalize(user.get_number_of_neighbors_in_group(group),
+                                           min([u.get_number_of_neighbors_in_group(group) for u in group]),
+                                           max([u.get_number_of_neighbors_in_group(group) for u in group]))
+        neighbors_outside = RoleAgent.normalize(user.get_number_of_neighbors_outside_the_group(group),
+                                                min([u.get_number_of_neighbors_outside_the_group(group) for u in
+                                                     group]),
+                                                max([u.get_number_of_neighbors_outside_the_group(group) for u in
+                                                     group]))
         if self.role is "Koncentrator":
-            if neighbors_in_group >= 0.7 and neighbors_outside_the_group < 0.7:
+            if neighbors_in >= 0.7 and neighbors_outside < 0.7:
                 user.add_role(self.role)
         elif self.role is "Pośrednik":
-            if neighbors_in_group < 0.7 and neighbors_outside_the_group >= 0.7:
+            if neighbors_in < 0.7 and neighbors_outside >= 0.7:
                 user.add_role(self.role)
         elif self.role is "Wszędobylski":
-            if neighbors_in_group >= 0.7 and neighbors_outside_the_group >= 0.7:
+            if neighbors_in >= 0.7 and neighbors_outside >= 0.7:
                 user.add_role(self.role)
 
-    def check_attitude_role(self, user):
-        positive = user.get_number_of_positive_actions()
-        negative = user.get_number_of_negative_actions()
+    def check_attitude_role(self, user, group):
+        positive = RoleAgent.normalize(user.get_number_of_positive_actions(group),
+                                       min([u.get_number_of_positive_actions(group) for u in group]),
+                                       max([u.get_number_of_positive_actions(group) for u in group]))
+        negative = RoleAgent.normalize(user.get_number_of_negative_actions(group),
+                                       min([u.get_number_of_negative_actions(group) for u in group]),
+                                       max([u.get_number_of_negative_actions(group) for u in group]))
         ratio = positive / negative
         if self.role is "Narzekacz":
             if ratio <= 0.3:
@@ -103,7 +113,7 @@ class RoleAgent(Agent):
             if self.role in roles_neighbors:
                 self.check_neighbors_role(user, group)
             if self.role in roles_attitude:
-                self.check_attitude_role(user)
+                self.check_attitude_role(user, group)
             if self.role in roles_activities:
                 self.check_activities_role(user)
 
