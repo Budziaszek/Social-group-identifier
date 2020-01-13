@@ -11,9 +11,6 @@ from action_types import ACTIONS
 import numpy as np
 
 model = SiteModel(NUMBER_OF_USERS)
-for _ in range(NUMBER_OF_STEPS):
-    model.step()
-
 
 def check_influence_distribution():
     agent_data = [a.get_influence() for a in model.schedule.agents]
