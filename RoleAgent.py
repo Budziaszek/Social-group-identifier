@@ -24,12 +24,12 @@ class RoleAgent(Agent):
         return ((value - min) / (maximum - minimum)) * (new_max - new_min) + new_min
 
     def check_influence_role(self, user, group):
-        influence = RoleAgent.normalize(user.get_influence(group),
-                                        min([u.get_influence(group) for u in group]),
-                                        max([u.get_influence(group) for u in group]))
-        activity = RoleAgent.normalize(user.get_activity(group),
-                                       min([u.get_activity(group) for u in group]),
-                                       max([u.get_activity(group) for u in group]))
+        influence = RoleAgent.normalize(user.get_influence_by_edges(group),
+                                        min([u.get_influence_by_edges(group) for u in group]),
+                                        max([u.get_influence_by_edges(group) for u in group]))
+        activity = RoleAgent.normalize(user.get_activity_by_edges(group),
+                                       min([u.get_activity_by_edges(group) for u in group]),
+                                       max([u.get_activity_by_edges(group) for u in group]))
         if self.role == "Spamer":
             if influence <= 0.3 and activity >= 0.7:
                 user.add_role(self.role)

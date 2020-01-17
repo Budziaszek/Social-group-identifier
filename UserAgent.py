@@ -29,24 +29,41 @@ class UserAgent(Agent):
             "share_post": 2
         }
 
+    def get_relations(self):
+        return self._relations
+
     def get_number_of_friends(self):
         return len(self.friends)
 
     def get_number_of_neighbors_in_group(self, group):
-        pass
-        # TODO neighbors - all who had interaction with user from group
+        neighbors_count = 0
+        for member in group:
+            if member in self._relations.keys():
+                neighbors_count += 1
+        return neighbors_count
 
     def get_number_of_neighbors_outside_the_group(self, group):
-        pass
-        # TODO neighbors - all who had interaction with user outside the group
+        neighbors_count = 0
+        for neighbor in self._relations.keys():
+            if neighbor not in group:
+                neighbors_count += 1
+        return neighbors_count
 
-    def get_influence(self, group):
-        pass
-        # TODO influence - sum of all in-edges (edges only with users from group)
+    def get_influence_by_edges(self, group):
+        influence = 0
+        for member in group:
+            if member in self._relations.keys():
+                influence += self._relations[member]
+        return influence
+        # TODO check if self._relations contains in-edges
 
-    def get_activity(self, group):
-        pass
-        # TODO activity - sum of all out-edges (edges only with users users from group)
+    def get_activity_by_edges(self, group):
+        influence = 0
+        for member in group:
+            if member in self._relations.keys():
+                influence += member.get_relations()[self]
+        return influence
+        # TODO check if member.get_relations()[self] contains out-edges
 
     def get_number_of_positive_actions(self, group):
         pass
@@ -84,7 +101,7 @@ class UserAgent(Agent):
         return self._interests
 
     def get_influence(self):
-        return self._influence
+        return
 
     def get_actions_probabilities(self):
         return self._actions_probabilities
@@ -141,7 +158,7 @@ class UserAgent(Agent):
             post.add_comment(
                 Comment(self._interests[post.tags[0]], self.unique_id))
             friend.update_relation(self, WRITE_COMMENT)
-            self.update_relation(friend, WRITE_COMMENT)
+            # self.update_relation(friend, WRITE_COMMENT)
             break
 
         print(self.unique_id, "write comment")
@@ -170,7 +187,7 @@ class UserAgent(Agent):
             post.add_reaction(
                 Reaction(self._interests[post.tags[0]], self.unique_id))
             friend.update_relation(self, REACT)
-            self.update_relation(friend, REACT)
+            # self.update_relation(friend, REACT)
             break
 
         print(self.unique_id, "react")
@@ -186,7 +203,7 @@ class UserAgent(Agent):
                 continue
             self._posts.append(post)
             friend.update_relation(self, SHARE_POST)
-            self.update_relation(friend, SHARE_POST)
+            # self.update_relation(friend, SHARE_POST)
             break
 
         print(self.unique_id, "share post")
