@@ -42,36 +42,36 @@ class UserAgent(Agent):
 
     def get_influence(self, group):
         pass
-        # TODO influence - sum of all in-edges (only users from group)
+        # TODO influence - sum of all in-edges (edges only with users from group)
 
     def get_activity(self, group):
         pass
-        # TODO activity - sum of all out-edges (only users from group)
+        # TODO activity - sum of all out-edges (edges only with users users from group)
 
     def get_number_of_positive_actions(self, group):
         pass
-        # TODO positive actions (only users from group, all action types)
+        # TODO positive actions (actions performed only for users from group, all action types)
 
     def get_number_of_negative_actions(self, group):
         pass
-        # TODO negative actions (only users from group, all action types)
+        # TODO negative actions (actions performed only for users from group, all action types)
 
     def get_number_of_comments(self):
         return [len(x) for x in self.model.users]
         pass
-        # TODO number of actions (all users)
+        # TODO number of actions (actions performed for all users)
 
     def get_number_of_posts(self):
         pass
-        # TODO number of actions (all users)
+        # TODO number of actions (all posts added)
 
     def get_number_of_shares(self):
         pass
-        # TODO number of actions (all users)
+        # TODO number of actions (shares performed - all users posts)
 
     def get_number_of_reactions(self):
         pass
-        # TODO number of actions (all users)
+        # TODO number of actions (reactions performed - all users posts)
 
     def add_role(self, role):
         pass
