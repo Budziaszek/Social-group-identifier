@@ -10,11 +10,12 @@ from RoleAgent import RoleAgent
 from utils import define_user_interests, define_user_actions_probabilities
 from UserAgent import UserAgent
 from role_types import roles
+from GroupAgent import GroupAgent
 
 
 class SiteModel(Model):
 
-    def __init__(self, num_agents):
+    def __init__(self, num_agents, num_groups):
         super().__init__()
 
         self.running = True
@@ -25,6 +26,7 @@ class SiteModel(Model):
         self.influence_values = deepcopy(self.exp_normalized)
         self.users = []
         self.role_agents = []
+        self.groups = []
 
         # Create users
         for i in range(num_agents):
@@ -37,6 +39,13 @@ class SiteModel(Model):
             self.users.append(user)
         for user in self.users:
             user.add_random_friends(round(math.ceil(random.choice(self.exp_normalized) * num_agents / 3)) + 1)
+
+        # Create groups
+        for i in range(num_groups):
+            group = GroupAgent(self.num_agents + i,  # groups ID are in range (num_agents, num_agents + num_groups)
+                               self)
+            self.schedule.add(group)
+            self.groups.append(group)
 
         self.datacollector = DataCollector(model_reporters={})
 

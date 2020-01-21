@@ -1,8 +1,8 @@
 from role_types import roles
 from model import SiteModel
-from config import NUMBER_OF_STEPS, NUMBER_OF_USERS
+from config import NUMBER_OF_STEPS, NUMBER_OF_USERS, MAX_NUMBER_OF_GROUPS
 
-model = SiteModel(NUMBER_OF_USERS)
+model = SiteModel(NUMBER_OF_USERS, MAX_NUMBER_OF_GROUPS)
 
 for _ in range(NUMBER_OF_STEPS):
     model.step()
