@@ -26,7 +26,7 @@ class GroupAgent(Agent):
         value = 0
         for userA in users_to_check:
             for userB in users_to_check:
-                value += userA.get_relations[userB]
+                value += userA.get_relation(userB)
         return value / (len(users_to_check) * (len(users_to_check) - 1))  # TODO check correctness of returned values
 
     def update_group(self):
@@ -58,7 +58,7 @@ class GroupAgent(Agent):
                 chosen_user = choice(self.model.users)
 
             if self.calculate_consistency([chosen_user] + self.group_members) > MIN_GROUP_CONSISTENCY:
-                self.group_members.extend(chosen_user)
+                self.group_members.append(chosen_user)
 
     def initialise(self):
         for _ in range(NUMBER_OF_INIT_TRIES):
@@ -73,3 +73,6 @@ class GroupAgent(Agent):
             self.initialise()
         elif self.update_group():  # True if group still exists
             self.search_new_members()
+
+    def present_group(self):
+        print("Group" + str(self.unique_id) + ": size=", str(len(self.group_members)), ", members=", self.group_members)

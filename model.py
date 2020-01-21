@@ -15,12 +15,14 @@ from GroupAgent import GroupAgent
 
 class SiteModel(Model):
 
-    def __init__(self, num_agents, num_groups):
+    def __init__(self, num_agents):
         super().__init__()
 
         self.running = True
         self.num_agents = num_agents
         self.schedule = RandomActivation(self)
+        self.schedule_groups = RandomActivation(self)
+        self.schedule_roles = RandomActivation(self)
         self.exp = np.random.exponential(1, num_agents)
         self.exp_normalized = [float(value) / max(self.exp) for value in self.exp]
         self.influence_values = deepcopy(self.exp_normalized)
@@ -40,22 +42,24 @@ class SiteModel(Model):
         for user in self.users:
             user.add_random_friends(round(math.ceil(random.choice(self.exp_normalized) * num_agents / 3)) + 1)
 
+        self.datacollector = DataCollector(model_reporters={"biggestGroup": SiteModel.biggest_group})
+
+    # Data collector
+    @staticmethod
+    def biggest_group(model):
+        biggest = 0
+        for gr in model.groups:
+            if gr.size > biggest:
+                biggest = gr.size
+        return biggest
+
+    def create_groups(self, num_groups):
         # Create groups
         for i in range(num_groups):
             group = GroupAgent(self.num_agents + i,  # groups ID are in range (num_agents, num_agents + num_groups)
                                self)
-            self.schedule.add(group)
+            self.schedule_groups.add(group)
             self.groups.append(group)
-
-        # Data collector
-        def biggest_group(model):
-            biggest = 0
-            for gr in model.groups:
-                if gr.size > biggest:
-                    biggest = gr.size
-            return biggest
-
-        self.datacollector = DataCollector(model_reporters={"biggestGroup": biggest_group})
 
     def define_user_influence(self):
         return self.influence_values.pop()
@@ -65,11 +69,15 @@ class SiteModel(Model):
         self.datacollector.collect(self)
         self.schedule.step()
 
+    def step_groups(self):
+        self.datacollector.collect(self)
+        self.schedule_groups.step()
+
     def assign_roles_init(self, groups):
         # Create role agents
         for i, role in enumerate(roles):
-            role_agent = RoleAgent(i, self, role)
-            self.schedule.add(role_agent)
+            role_agent = RoleAgent(i, role, self)
+            self.schedule_roles.add(role_agent)
             self.role_agents.append(role_agent)
         RoleAgent.groups = groups
         for agent in self.role_agents:

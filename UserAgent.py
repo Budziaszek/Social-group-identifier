@@ -19,6 +19,7 @@ class UserAgent(Agent):
         self._actions_probabilities = actions_probabilities
         self._influence = influence
         self._friends = []
+        self._roles = defaultdict(list)
         self._actions = {"write_comment": self.write_comment_to_post,
                          "write_post": self.write_post,
                          "react": self.react_to_post,
@@ -31,6 +32,12 @@ class UserAgent(Agent):
 
     def get_relations(self):
         return self._relations
+
+    def get_relation(self, user):
+        if user in self._relations:
+            return self._relations[user]
+        else:
+            return 0
 
     def get_number_of_friends(self):
         return len(self.friends)
@@ -51,7 +58,7 @@ class UserAgent(Agent):
 
     def get_influence_by_edges(self, group):
         influence = 0
-        for member in group:
+        for member in group.group_members:
             if member in self._relations.keys():
                 influence += self._relations[member]
         return influence
@@ -59,18 +66,18 @@ class UserAgent(Agent):
 
     def get_activity_by_edges(self, group):
         influence = 0
-        for member in group:
+        for member in group.group_members:
             if member in self._relations.keys():
                 influence += member.get_relations()[self]
         return influence
         # TODO check if member.get_relations()[self] contains out-edges
 
     def get_number_of_positive_actions(self, group):
-        pass
+        return 0
         # TODO positive actions (actions performed only for users from group, all action types)
 
     def get_number_of_negative_actions(self, group):
-        pass
+        return 0
         # TODO negative actions (actions performed only for users from group, all action types)
 
     def get_number_of_comments(self):
@@ -90,9 +97,11 @@ class UserAgent(Agent):
         pass
         # TODO number of actions (reactions performed - all users posts)
 
-    def add_role(self, role):
-        pass
-        # TODO add role
+    def add_role(self, role, group):
+        self._roles[group.unique_id].append(role)
+
+    def present_roles(self):
+        print("User" + str(self.unique_id) + ": roles=", self._roles)
 
     def update_relation(self, user, action_type):
         self._relations[user] += self._action_relation_values[action_type]
