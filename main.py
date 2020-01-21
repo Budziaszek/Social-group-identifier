@@ -11,3 +11,6 @@ groups = []  # TODO create groups
 
 for _ in range(len(roles)):
     model.assign_roles_init(groups)
+
+# gini = model.datacollector.get_model_vars_dataframe()
+# gini.plot()

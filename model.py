@@ -12,6 +12,8 @@ from UserAgent import UserAgent
 from role_types import roles
 from GroupAgent import GroupAgent
 
+from data_collector_utils import get_number_of_reactions, biggest_group
+
 
 class SiteModel(Model):
 
@@ -47,15 +49,8 @@ class SiteModel(Model):
             self.schedule.add(group)
             self.groups.append(group)
 
-        # Data collector
-        def biggest_group(model):
-            biggest = 0
-            for gr in model.groups:
-                if gr.size > biggest:
-                    biggest = gr.size
-            return biggest
-
-        self.datacollector = DataCollector(model_reporters={"biggestGroup": biggest_group})
+        self.datacollector = DataCollector(model_reporters={"biggestGroup": biggest_group},
+                                           agent_reporters={"Post_shared": get_number_of_reactions})
 
     def define_user_influence(self):
         return self.influence_values.pop()

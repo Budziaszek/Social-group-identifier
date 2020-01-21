@@ -2,7 +2,6 @@ import random
 from collections import defaultdict
 
 from mesa import Agent
-from copy import deepcopy
 from Actions import Post, Reaction, Comment
 from config import TAGS, INITIAL_RELATION_VALUE, RELATION_DECAY_PER_CYCLE, MIN_CHANCE_FOR_FRIENDS
 from action_types import REACT, WRITE_COMMENT, SHARE_POST
@@ -87,7 +86,7 @@ class UserAgent(Agent):
         # TODO number of actions (shares performed - all users posts)
 
     def get_number_of_reactions(self):
-        pass
+        return self._performed_actions[REACT]
         # TODO number of actions (reactions performed - all users posts)
 
     def add_role(self, role):
