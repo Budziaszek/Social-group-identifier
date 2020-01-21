@@ -1,5 +1,4 @@
 import matplotlib.pyplot as plt
-
 from model import SiteModel
 from config import NUMBER_OF_STEPS, NUMBER_OF_USERS, MAX_NUMBER_OF_GROUPS, NUMBER_OG_GROUP_STEPS
 
@@ -27,3 +26,6 @@ biggest_group = model.datacollector.get_model_vars_dataframe()
 biggest_group.plot()
 
 plt.show()
+
+number_of_post_written = model.datacollector.get_agent_vars_dataframe()
+print(number_of_post_written)

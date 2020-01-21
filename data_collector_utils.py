@@ -1,9 +1,9 @@
 from UserAgent import UserAgent
 
 
-def get_number_of_reactions(agent):
-    if agent is UserAgent:
-        return agent.get_number_of_reactions()
+def get_number_of_post_written(agent):
+    if type(agent) is UserAgent:
+        return agent.get_number_of_posts()
     else:
         return None
 
