@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 from model import SiteModel
-from config import NUMBER_OF_STEPS, NUMBER_OF_USERS, MAX_NUMBER_OF_GROUPS, NUMBER_OG_GROUP_STEPS
+from config import NUMBER_OF_STEPS, NUMBER_OF_USERS, MAX_NUMBER_OF_GROUPS, NUMBER_OF_GROUP_STEPS
 
 model = SiteModel(NUMBER_OF_USERS)
 
@@ -12,7 +12,7 @@ for _ in range(NUMBER_OF_STEPS):
 print("________________GROUPS________________")
 
 model.create_groups(MAX_NUMBER_OF_GROUPS)
-for _ in range(NUMBER_OG_GROUP_STEPS):
+for _ in range(NUMBER_OF_GROUP_STEPS):
     model.step_groups()
 for group in model.groups:
     group.present_group()
