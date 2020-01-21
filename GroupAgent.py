@@ -9,7 +9,7 @@ class GroupAgent(Agent):
     def __init__(self, unique_id, model):
         super().__init__(unique_id, model)
         self.group_members = []
-        self.consistency = 0
+        self._consistency = 0
 
     @property
     def size(self):
@@ -30,22 +30,22 @@ class GroupAgent(Agent):
         return value / (len(users_to_check) * (len(users_to_check) - 1))  # TODO check correctness of returned values
 
     def update_group(self):
-        self.consistency = self.calculate_consistency(self.group_members)
+        self._consistency = self.calculate_consistency(self.group_members)
 
-        while self.consistency < MIN_GROUP_CONSISTENCY:
+        while self._consistency < MIN_GROUP_CONSISTENCY:
             self.delete_member()
 
             if len(self.group_members) < 3:  # Group has become too small and is exterminated
                 self.group_members = []
-                self.consistency = 0
+                self._consistency = 0
                 return False
 
-            self.consistency = self.calculate_consistency(self.group_members)
+            self._consistency = self.calculate_consistency(self.group_members)
         return True
 
     def delete_member(self):
         for i in range(len(self.group_members)):
-            if self.calculate_consistency(self.group_members[:i] + self.group_members[i + 1:]) > self.consistency:
+            if self.calculate_consistency(self.group_members[:i] + self.group_members[i + 1:]) > self._consistency:
                 del self.group_members[i]
 
     def search_new_members(self):
