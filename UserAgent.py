@@ -2,10 +2,9 @@ import random
 from collections import defaultdict
 
 from mesa import Agent
-from copy import deepcopy
 from Actions import Post, Reaction, Comment
 from config import TAGS, INITIAL_RELATION_VALUE, RELATION_DECAY_PER_CYCLE, MIN_CHANCE_FOR_FRIENDS
-from action_types import REACT, WRITE_COMMENT, SHARE_POST
+from action_types import REACT, WRITE_COMMENT, SHARE_POST, WRITE_POST
 
 
 class UserAgent(Agent):
@@ -81,21 +80,22 @@ class UserAgent(Agent):
         # TODO negative actions (actions performed only for users from group, all action types)
 
     def get_number_of_comments(self):
-        return [len(x) for x in self.model.users]
+        return [len(x) for x in self.model.users]  # (?)
+        # return self._performed_actions[WRITE_COMMENT]
         pass
         # TODO number of actions (actions performed for all users)
 
     def get_number_of_posts(self):
-        pass
-        # TODO number of actions (all posts added)
+        """Number of actions (all posts added)"""
+        return self._performed_actions[WRITE_POST]
 
     def get_number_of_shares(self):
-        pass
-        # TODO number of actions (shares performed - all users posts)
+        """Number of actions (shares performed - all users posts)"""
+        return self._performed_actions[SHARE_POST]
 
     def get_number_of_reactions(self):
-        pass
-        # TODO number of actions (reactions performed - all users posts)
+        """Number of actions (reactions performed - all users posts)"""
+        return self._performed_actions[REACT]
 
     def add_role(self, role, group):
         self._roles[group.unique_id].append(role)

@@ -12,6 +12,8 @@ from UserAgent import UserAgent
 from role_types import roles
 from GroupAgent import GroupAgent
 
+# from data_collector_utils import get_number_of_reactions, biggest_group
+
 
 class SiteModel(Model):
 
@@ -43,6 +45,9 @@ class SiteModel(Model):
             user.add_random_friends(round(math.ceil(random.choice(self.exp_normalized) * num_agents / 3)) + 1)
 
         self.datacollector = DataCollector(model_reporters={"biggestGroup": SiteModel.biggest_group})
+
+        # self.datacollector = DataCollector(model_reporters={"biggestGroup": biggest_group},
+        #                                    agent_reporters={"Post_shared": get_number_of_reactions})
 
     # Data collector
     @staticmethod

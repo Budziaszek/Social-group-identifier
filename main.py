@@ -22,3 +22,6 @@ print("________________ROLES_________________")
 model.assign_roles_init(model.groups)
 for user in model.users:
     user.present_roles()
+
+# gini = model.datacollector.get_model_vars_dataframe()
+# gini.plot()
