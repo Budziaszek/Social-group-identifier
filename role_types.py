@@ -5,7 +5,7 @@ roles_activities = ["Lurker", "Komentujący", "Piszący", "Udostępniający", "R
 
 roles = []
 roles.extend(roles_influence)
-# roles.extend(roles_neighbors)
-# roles.extend(roles_activities)
-# roles.extend(roles_attitude)
+roles.extend(roles_neighbors)
+roles.extend(roles_activities)
+roles.extend(roles_attitude)
 

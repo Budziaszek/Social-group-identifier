@@ -7,6 +7,7 @@ from numpy import mean
 from Actions import Post, Reaction, Comment
 from config import TAGS, INITIAL_RELATION_VALUE, RELATION_DECAY_PER_CYCLE, MIN_CHANCE_FOR_FRIENDS
 from action_types import REACT, WRITE_COMMENT, SHARE_POST, WRITE_POST
+from role_types import roles, roles_influence, roles_neighbors, roles_activities, roles_attitude
 
 
 class UserAgent(Agent):
@@ -47,7 +48,7 @@ class UserAgent(Agent):
 
     def get_number_of_neighbors_in_group(self, group):
         neighbors_count = 0
-        for member in group:
+        for member in group.group_members:
             if member in self._relations.keys():
                 neighbors_count += 1
         return neighbors_count
@@ -55,7 +56,7 @@ class UserAgent(Agent):
     def get_number_of_neighbors_outside_the_group(self, group):
         neighbors_count = 0
         for neighbor in self._relations.keys():
-            if neighbor not in group:
+            if neighbor not in group.group_members:
                 neighbors_count += 1
         return neighbors_count
 
@@ -80,12 +81,14 @@ class UserAgent(Agent):
         for member in group.group_members:
             if member in self._positive_actions_by_user.keys():
                 return self._positive_actions_by_user[member]
+        return 0
 
     def get_number_of_negative_actions(self, group):
         """Negative actions (actions performed only for users from group, all action types)"""
         for member in group.group_members:
             if member in self._negative_actions_by_user.keys():
                 return self._negative_actions_by_user[member]
+        return 0
 
     def get_number_of_comments(self):
         """"Number of actions (actions performed for all users)"""
@@ -106,8 +109,21 @@ class UserAgent(Agent):
     def add_role(self, role, group):
         self._roles[group.unique_id].append(role)
 
+    def get_role_from_type(self, group, roles_category_array):
+        for role in roles_category_array:
+            if role in self._roles[group]:
+                return role
+        return "Normal"
+
     def present_roles(self):
-        print("User" + str(self.unique_id) + ": roles=", self._roles)
+        print("User" + str(self.unique_id) + ": roles=")
+        for group in self._roles:
+            print("\tGroup" + str(group) + " -> ["
+                  + self.get_role_from_type(group, roles_influence) + ", "
+                  + self.get_role_from_type(group, roles_neighbors) + ", "
+                  + self.get_role_from_type(group, roles_activities) + ", "
+                  + self.get_role_from_type(group, roles_attitude) + "]")
+        print('')
 
     def update_relation(self, user, action_type):
         self._relations[user] += self._action_relation_values[action_type]
