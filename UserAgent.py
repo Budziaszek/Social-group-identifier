@@ -212,23 +212,23 @@ class UserAgent(Agent):
                 continue
             self._posts.append(post)
             friend.update_relation(self, SHARE_POST)
-            friend.append_share(post)
+            friend.append_share(post, user=self)
             # self.update_relation(friend, SHARE_POST)
             break
 
         print(self.unique_id, "share post")
 
-    def append_react(self, post, reaction):
-        self._posts[post].add_reaction(reaction)
+    def append_reaction(self, post, reaction):
+        self._posts[self.get_post_idx(post)].add_reaction(reaction)
 
     def append_comment(self, post, comment):
-        self._posts[post].add_comment(comment)
+        self._posts[self.get_post_idx(post)].add_comment(comment)
 
-    def append_share(self, post):
-        self._posts[post].add_share()
+    def append_share(self, post, user):
+        self._posts[self.get_post_idx(post)].add_shared(user)
 
-    def append_observer(self, post, user):
-        self._posts[post].add_observer(user)
+    def get_post_idx(self, post):
+        return self._posts.index(post)
 
     def step(self):
         actions: list = list(self._actions_probabilities)

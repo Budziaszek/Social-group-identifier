@@ -21,7 +21,7 @@ class Post(Action):
         self.tags = tags
         self.comments = []
         self.reactions = []
-        self.observers = []
+        self.shared = []
 
     def add_comment(self, comment):
         self.comments.append(comment)
@@ -29,8 +29,8 @@ class Post(Action):
     def add_reaction(self, reaction):
         self.reactions.append(reaction)
 
-    def add_observer(self, user):
-        self.observers.append(user)
+    def add_shared(self, user):
+        self.shared.append(user)
 
     def share_post(self):
         pass
