@@ -5,10 +5,11 @@ from config import NUMBER_OF_STEPS, NUMBER_OF_USERS, MAX_NUMBER_OF_GROUPS, NUMBE
 model = SiteModel(NUMBER_OF_USERS)
 
 print("______________SIMULATION______________")
-
-for _ in range(NUMBER_OF_STEPS):
+for i in range(NUMBER_OF_STEPS):
     model.step()
+    print(f"\rCurrent progress {(i+1)/NUMBER_OF_STEPS * 100}%..", end="")
 
+print(" Simulation finished!")
 print("________________GROUPS________________")
 
 model.create_groups(MAX_NUMBER_OF_GROUPS)
