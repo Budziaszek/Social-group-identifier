@@ -92,6 +92,8 @@ class RoleAgent(Agent):
         shares = user.get_number_of_shares()
         reactions = user.get_number_of_reactions()
         total = comments + posts + shares + reactions
+        if total == 0:
+            return
         if self.role == "Lurker":
             if (comments + posts) / total <= 0.3:
                 user.add_role(self.role, group)

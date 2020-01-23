@@ -9,7 +9,7 @@ TAGS = ["dog", "cat", "lama", "rabbit"]
 # Simulation consts
 NUMBER_OF_USERS = 10
 NUMBER_OF_STEPS = 10
-MAX_NUMBER_OF_GROUPS = 10
+MAX_NUMBER_OF_GROUPS = 2
 
 # Group consts
 NUMBER_OF_GROUP_STEPS = 10

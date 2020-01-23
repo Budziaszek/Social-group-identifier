@@ -7,6 +7,7 @@ from mesa.time import RandomActivation
 from mesa.datacollection import DataCollector
 
 from RoleAgent import RoleAgent
+from config import NUMBER_OF_USERS
 from utils import define_user_interests, define_user_actions_probabilities
 from UserAgent import UserAgent
 from role_types import roles
@@ -25,7 +26,7 @@ class SiteModel(Model):
         self.schedule = RandomActivation(self)
         self.schedule_groups = RandomActivation(self)
         self.schedule_roles = RandomActivation(self)
-        self.exp = np.random.exponential(1, num_agents)
+        self.exp = np.random.exponential(1, num_agents * 2)
         self.exp_normalized = [float(value) / max(self.exp) for value in self.exp]
         self.influence_values = deepcopy(self.exp_normalized)
         self.users = []
@@ -42,7 +43,6 @@ class SiteModel(Model):
                              self)
             self.schedule.add(user)
             self.users.append(user)
-            self.curr_user_id += 1
         for user in self.users:
             user.add_random_friends(round(math.ceil(random.choice(self.exp_normalized) * num_agents / 3)) + 1)
             user.expand_influence()
@@ -68,10 +68,26 @@ class SiteModel(Model):
     def step(self):
         self.datacollector.collect(self)
         self.schedule.step()
+        self.add_new_users()
 
     def step_groups(self):
         self.datacollector.collect(self)
         self.schedule_groups.step()
+
+    def add_new_users(self):
+        num_agents = random.choice([i for i in range(math.ceil(NUMBER_OF_USERS / 500) + 1)])
+        # Create users
+        for i in range(num_agents):
+            user = UserAgent(self.increment_curr_user_id(),
+                             define_user_interests(),
+                             define_user_actions_probabilities(self.exp_normalized),
+                             self.define_user_influence(),
+                             self)
+            self.schedule.add(user)
+            self.users.append(user)
+        for user in self.users:
+            user.add_random_friends(3)
+            user.expand_influence()
 
     def assign_roles_init(self, groups):
         # Create role agents
