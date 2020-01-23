@@ -14,7 +14,7 @@ class UserAgent(Agent):
 
     def __init__(self, unique_id, interests, actions_probabilities, influence, model):
         super().__init__(unique_id, model)
-        self._relations = {}  # weights determining the relationship with users
+        self._relations = defaultdict(float)  # weights determining the relationship with users
         self._interests = interests
         self._posts = []  # written _posts
         self._performed_actions = defaultdict(int)
@@ -131,8 +131,9 @@ class UserAgent(Agent):
     def get_interests(self):
         return self._interests
 
-    def get_influence(self):
-        return
+    @property
+    def influence(self):
+        return self._influence
 
     def get_actions_probabilities(self):
         return self._actions_probabilities
@@ -177,6 +178,16 @@ class UserAgent(Agent):
             self.add_friend(user)
             user.add_friend(self)
 
+    def expand_influence(self):
+        """ Expands user influence (how big his reach is outside his friend list) based
+            Based on self._influence value. Essentially it adds friends in ONE way only.
+            Meaning they can be reach but they cannot be reached.
+        """
+        user_reach = int(len(self.model.users) * self._influence)
+        # print(f'User reach of {self._influence} is {user_reach} / {len(self.model.users)}')
+        for user in random.sample(self.model.users, user_reach):
+            self.add_friend(user)
+
     def write_comment_to_post(self):
         """Randomly go through friends and choose random post to comment
            Add Comment to post with unique_id and interests for first tag from post
@@ -195,7 +206,6 @@ class UserAgent(Agent):
             # self.update_relation(friend, WRITE_COMMENT)
             break
 
-        print(self.unique_id, "write comment")
 
     def write_post(self, tags=None, user=None):
         if tags is None:
@@ -205,7 +215,6 @@ class UserAgent(Agent):
         attitude = mean([self._interests[tag] for tag in tags])
         new_post = Post(attitude=attitude, author=self, tags=tags)
         self._posts.append(new_post)
-        print(self.unique_id, "write post")
 
     def update_positive_and_negative_actions(self, user, attitude):
         if user not in self._positive_actions_by_user:
@@ -234,7 +243,6 @@ class UserAgent(Agent):
             # self.update_relation(friend, REACT)
             break
 
-        print(self.unique_id, "react")
 
     def share_post(self):
         """Randomly go through friends and choose random post to share
@@ -251,8 +259,6 @@ class UserAgent(Agent):
             friend.append_share(post, user=self)
             # self.update_relation(friend, SHARE_POST)
             break
-
-        print(self.unique_id, "share post")
 
     def append_reaction(self, post, reaction):
         self._posts[self.get_post_idx(post)].add_reaction(reaction)

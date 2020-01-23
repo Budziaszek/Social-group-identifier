@@ -45,6 +45,7 @@ class SiteModel(Model):
             self.curr_user_id += 1
         for user in self.users:
             user.add_random_friends(round(math.ceil(random.choice(self.exp_normalized) * num_agents / 3)) + 1)
+            user.expand_influence()
 
         self.datacollector = DataCollector(model_reporters={"biggestGroup": biggest_group},
                                            agent_reporters={"Post_written": get_number_of_post_written})
@@ -65,7 +66,6 @@ class SiteModel(Model):
         return self.influence_values.pop()
 
     def step(self):
-        print("\nNew cycle")
         self.datacollector.collect(self)
         self.schedule.step()
 
