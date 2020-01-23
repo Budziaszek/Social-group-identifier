@@ -2,6 +2,8 @@ import random
 from collections import defaultdict
 
 from mesa import Agent
+from numpy import mean
+
 from Actions import Post, Reaction, Comment
 from config import TAGS, INITIAL_RELATION_VALUE, RELATION_DECAY_PER_CYCLE, MIN_CHANCE_FOR_FRIENDS
 from action_types import REACT, WRITE_COMMENT, SHARE_POST, WRITE_POST
@@ -15,6 +17,8 @@ class UserAgent(Agent):
         self._interests = interests
         self._posts = []  # written _posts
         self._performed_actions = defaultdict(int)
+        self._positive_actions_by_user = {}
+        self._negative_actions_by_user = {}
         self._actions_probabilities = actions_probabilities
         self._influence = influence
         self._friends = []
@@ -72,12 +76,16 @@ class UserAgent(Agent):
         # TODO check if member.get_relations()[self] contains out-edges
 
     def get_number_of_positive_actions(self, group):
-        return 0
-        # TODO positive actions (actions performed only for users from group, all action types)
+        """Positive actions (actions performed only for users from group, all action types)"""
+        for member in group.group_members:
+            if member in self._positive_actions_by_user.keys():
+                return self._positive_actions_by_user[member]
 
     def get_number_of_negative_actions(self, group):
-        return 0
-        # TODO negative actions (actions performed only for users from group, all action types)
+        """Negative actions (actions performed only for users from group, all action types)"""
+        for member in group.group_members:
+            if member in self._negative_actions_by_user.keys():
+                return self._negative_actions_by_user[member]
 
     def get_number_of_comments(self):
         """"Number of actions (actions performed for all users)"""
@@ -162,7 +170,9 @@ class UserAgent(Agent):
             post: Post = friend.get_random_post()
             if not post:
                 continue
-            comment = Comment(self._interests[post.tags[0]], self.unique_id)
+            attitude = self._interests[random.choice(post.tags)]
+            self.update_positive_and_negative_actions(friend, attitude)
+            comment = Comment(attitude, self.unique_id)
             post.add_comment(comment)
             friend.update_relation(self, WRITE_COMMENT)
             friend.append_comment(post, comment)
@@ -171,17 +181,24 @@ class UserAgent(Agent):
 
         print(self.unique_id, "write comment")
 
-    def write_post(self):
-        # TODO select topics, send to _friends and to some random users if _influence is high enough
-        #   post is sent to everyone if user _influence is equal to 1
-        #   post is sent to half of users if user _influence is equal to 0.5 etc
-        new_post = Post(attitude=['?'], author=self,
-                        tags=random.choices(TAGS, k=random.randint(1, len(TAGS))))
-        # TODO choose somehow attitude and others parameters in case of post action
-        # Attitude might be calculated using post tags - mean of all interests used in post
-        # eg. if tags are dog, cat and dog:1, cat:0.5 attitude = ceil((1 + 0.5)/2)
+    def write_post(self, tags=None, user=None):
+        if tags is None:
+            tags = random.choices(TAGS, k=random.randint(1, len(TAGS)))
+            attitude = mean([self._interests[tag] for tag in tags])
+            self.update_positive_and_negative_actions(user, attitude)
+        attitude = mean([self._interests[tag] for tag in tags])
+        new_post = Post(attitude=attitude, author=self, tags=tags)
         self._posts.append(new_post)
         print(self.unique_id, "write post")
+
+    def update_positive_and_negative_actions(self, user, attitude):
+        if user not in self._positive_actions_by_user:
+            self._positive_actions_by_user[user] = 0
+            self._negative_actions_by_user[user] = 0
+        if attitude >= 0:
+            self._positive_actions_by_user[user] += 1
+        else:
+            self._negative_actions_by_user[user] += 1
 
     def react_to_post(self):
         """Randomly go through friends and choose random post to react
@@ -192,7 +209,9 @@ class UserAgent(Agent):
             post: Post = friend.get_random_post()
             if not post:
                 continue
-            reaction = Reaction(self._interests[post.tags[0]], self.unique_id)
+            attitude = self._interests[random.choice(post.tags)]
+            self.update_positive_and_negative_actions(friend, attitude)
+            reaction = Reaction(attitude, self.unique_id)
             post.add_reaction(reaction)
             friend.update_relation(self, REACT)
             friend.append_reaction(post, reaction)
@@ -210,7 +229,8 @@ class UserAgent(Agent):
             post: Post = friend.get_random_post()
             if not post:
                 continue
-            self._posts.append(post)
+            # self._posts.append(post)
+            self.write_post(post.tags, friend)
             friend.update_relation(self, SHARE_POST)
             friend.append_share(post, user=self)
             # self.update_relation(friend, SHARE_POST)
