@@ -66,7 +66,6 @@ class UserAgent(Agent):
             if member in self._relations.keys():
                 influence += self._relations[member]
         return influence
-        # TODO check if self._relations contains in-edges
 
     def get_activity_by_edges(self, group):
         influence = 0
@@ -74,7 +73,6 @@ class UserAgent(Agent):
             if member in self._relations.keys():
                 influence += member.get_relations()[self]
         return influence
-        # TODO check if member.get_relations()[self] contains out-edges
 
     def get_number_of_positive_actions(self, group):
         """Positive actions (actions performed only for users from group, all action types)"""
@@ -206,7 +204,6 @@ class UserAgent(Agent):
             # self.update_relation(friend, WRITE_COMMENT)
             break
 
-
     def write_post(self, tags=None, user=None):
         if tags is None:
             tags = random.choices(TAGS, k=random.randint(1, len(TAGS)))
@@ -242,7 +239,6 @@ class UserAgent(Agent):
             friend.append_reaction(post, reaction)
             # self.update_relation(friend, REACT)
             break
-
 
     def share_post(self):
         """Randomly go through friends and choose random post to share

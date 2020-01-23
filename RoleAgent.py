@@ -22,7 +22,9 @@ class RoleAgent(Agent):
     @staticmethod
     def normalize(value, minimum, maximum, new_min=0, new_max=1):
         if maximum == 0:
-            return value
+            return 0
+        elif maximum == minimum:
+            return 1
         return ((value - minimum) / (maximum - minimum)) * (new_max - new_min) + new_min
 
     def check_influence_role(self, user, group):
