@@ -80,10 +80,8 @@ class UserAgent(Agent):
         # TODO negative actions (actions performed only for users from group, all action types)
 
     def get_number_of_comments(self):
-        return [len(x) for x in self.model.users]  # (?)
-        # return self._performed_actions[WRITE_COMMENT]
-        pass
-        # TODO number of actions (actions performed for all users)
+        """"Number of actions (actions performed for all users)"""
+        return self._performed_actions[WRITE_COMMENT]
 
     def get_number_of_posts(self):
         """Number of actions (all posts added)"""
@@ -164,9 +162,10 @@ class UserAgent(Agent):
             post: Post = friend.get_random_post()
             if not post:
                 continue
-            post.add_comment(
-                Comment(self._interests[post.tags[0]], self.unique_id))
+            comment = Comment(self._interests[post.tags[0]], self.unique_id)
+            post.add_comment(comment)
             friend.update_relation(self, WRITE_COMMENT)
+            friend.append_comment(post, comment)
             # self.update_relation(friend, WRITE_COMMENT)
             break
 
@@ -177,10 +176,10 @@ class UserAgent(Agent):
         #   post is sent to everyone if user _influence is equal to 1
         #   post is sent to half of users if user _influence is equal to 0.5 etc
         new_post = Post(attitude=['?'], author=self,
-                        tags=random.choices(TAGS, k=random.randint(1, len(
-                            TAGS))))  # TODO: Random tags, what about attidute?
-        # TODO I think attutude can by calculated from interests (tags)
-        #   eg. if tags are dog, cat and dog:1, cat:0.5 attitude = ceil((1 + 0.5)/2)
+                        tags=random.choices(TAGS, k=random.randint(1, len(TAGS))))
+        # TODO choose somehow attitude and others parameters in case of post action
+        # Attitude might be calculated using post tags - mean of all interests used in post
+        # eg. if tags are dog, cat and dog:1, cat:0.5 attitude = ceil((1 + 0.5)/2)
         self._posts.append(new_post)
         print(self.unique_id, "write post")
 
@@ -193,9 +192,10 @@ class UserAgent(Agent):
             post: Post = friend.get_random_post()
             if not post:
                 continue
-            post.add_reaction(
-                Reaction(self._interests[post.tags[0]], self.unique_id))
+            reaction = Reaction(self._interests[post.tags[0]], self.unique_id)
+            post.add_reaction(reaction)
             friend.update_relation(self, REACT)
+            friend.append_reaction(post, reaction)
             # self.update_relation(friend, REACT)
             break
 
@@ -212,19 +212,23 @@ class UserAgent(Agent):
                 continue
             self._posts.append(post)
             friend.update_relation(self, SHARE_POST)
+            friend.append_share(post)
             # self.update_relation(friend, SHARE_POST)
             break
 
         print(self.unique_id, "share post")
 
-    def append_react(self, post_id, reaction):
-        self._posts[post_id].add_reaction(reaction)
+    def append_react(self, post, reaction):
+        self._posts[post].add_reaction(reaction)
 
-    def append_comment(self, post_id, comment):
-        self._posts[post_id].add_comment(comment)
+    def append_comment(self, post, comment):
+        self._posts[post].add_comment(comment)
 
-    def append_observer(self, post_id, user):
-        self._posts[post_id].add_observer(user)
+    def append_share(self, post):
+        self._posts[post].add_share()
+
+    def append_observer(self, post, user):
+        self._posts[post].add_observer(user)
 
     def step(self):
         actions: list = list(self._actions_probabilities)
