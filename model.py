@@ -95,6 +95,9 @@ class SiteModel(Model):
             role_agent = RoleAgent(self.increment_curr_user_id(), role, self)
             self.schedule_roles.add(role_agent)
             self.role_agents.append(role_agent)
-        RoleAgent.groups = groups
-        for agent in self.role_agents:
-            agent.determine_users_roles()
+
+        for group in groups:
+            RoleAgent.group = group
+            for agent in self.role_agents:
+                agent.determine_users_roles()
+            RoleAgent.negotiate(self.role_agents, self.users)
