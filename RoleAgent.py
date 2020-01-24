@@ -1,3 +1,4 @@
+from itertools import combinations
 from math import floor
 
 from mesa import Agent
@@ -25,15 +26,15 @@ class RoleAgent(Agent):
             else:
                 self.check_criteria(user, self.dictionary)
         if self.role in roles_influence:
-            num_of_users = floor(len(self.group.group_members)/len(roles_influence))
+            num_of_users = floor(len(self.group.group_members) / (len(roles_influence) * 1.5))
         elif self.role in roles_neighbors:
-            num_of_users = floor(len(self.group.group_members)/len(roles_neighbors))
+            num_of_users = floor(len(self.group.group_members) / (len(roles_neighbors) * 1.5))
         elif self.role in roles_activities:
-            num_of_users = floor(len(self.group.group_members) / len(roles_activities))
+            num_of_users = floor(len(self.group.group_members) / (len(roles_activities) * 1.5))
         else:
-            num_of_users = floor(len(self.group.group_members) / len(roles_attitude))
+            num_of_users = floor(len(self.group.group_members) / (len(roles_attitude) * 1.5))
         if num_of_users == 0:
-                return
+            return
         self.selected = sorted(self.dictionary, key=self.dictionary.get)[0:num_of_users]
 
     @staticmethod
@@ -53,7 +54,7 @@ class RoleAgent(Agent):
                                         max([u.get_influence_by_edges(self.group) for u in self.group.group_members]))
         activity = RoleAgent.normalize(user.get_activity_by_edges(self.group),
                                        min([u.get_activity_by_edges(self.group) for u in self.group.group_members]),
-                                    max([u.get_activity_by_edges(self.group) for u in self.group.group_members]))
+                                       max([u.get_activity_by_edges(self.group) for u in self.group.group_members]))
 
         if self.role == "Spamer":
             if dictionary is None and influence <= 0.3 and activity >= 0.7:
@@ -105,11 +106,15 @@ class RoleAgent(Agent):
 
     def check_attitude_role(self, user, dictionary=None):
         positive = RoleAgent.normalize(user.get_number_of_positive_actions(self.group),
-                                       min([u.get_number_of_positive_actions(self.group) for u in self.group.group_members]),
-                                       max([u.get_number_of_positive_actions(self.group) for u in self.group.group_members]))
+                                       min([u.get_number_of_positive_actions(self.group) for u in
+                                            self.group.group_members]),
+                                       max([u.get_number_of_positive_actions(self.group) for u in
+                                            self.group.group_members]))
         negative = RoleAgent.normalize(user.get_number_of_negative_actions(self.group),
-                                       min([u.get_number_of_negative_actions(self.group) for u in self.group.group_members]),
-                                       max([u.get_number_of_negative_actions(self.group) for u in self.group.group_members]))
+                                       min([u.get_number_of_negative_actions(self.group) for u in
+                                            self.group.group_members]),
+                                       max([u.get_number_of_negative_actions(self.group) for u in
+                                            self.group.group_members]))
         ratio = positive / negative if negative > 0 else int(positive > 0)
         if self.role == "Narzekacz":
             if dictionary is None and ratio <= 0.3:
@@ -173,7 +178,7 @@ class RoleAgent(Agent):
         if self.role in roles_influence:
             self.check_influence_role(user, dictionary)
         if self.role in roles_neighbors:
-            self.check_neighbors_role(user,  dictionary)
+            self.check_neighbors_role(user, dictionary)
         if self.role in roles_attitude:
             self.check_attitude_role(user, dictionary)
         if self.role in roles_activities:
@@ -182,21 +187,44 @@ class RoleAgent(Agent):
     @staticmethod
     def negotiate(role_agents, users):
         if CURR_MODE is MODE_WITH_NEGOTIATIONS:
+            negotiations = {"influence": {}, "neighbors": {}, "activities": {}, "attitude": {}}
             for user in users:
-                RoleAgent.check_best_role(user, roles_influence, role_agents)
-                RoleAgent.check_best_role(user, roles_neighbors, role_agents)
-                RoleAgent.check_best_role(user, roles_activities, role_agents)
-                RoleAgent.check_best_role(user, roles_attitude, role_agents)
+                possible_roles = RoleAgent.check_best_role(user, roles_influence, role_agents)
+                for combination in combinations(possible_roles, 2):
+                    if combination not in negotiations["influence"]:
+                        negotiations["influence"][combination] = 0
+                    negotiations["influence"][combination] += 1
+                possible_roles = RoleAgent.check_best_role(user, roles_neighbors, role_agents)
+                for combination in combinations(possible_roles, 2):
+                    if combination not in negotiations["neighbors"]:
+                        negotiations["neighbors"][combination] = 0
+                    negotiations["neighbors"][combination] += 1
+                possible_roles = RoleAgent.check_best_role(user, roles_activities, role_agents)
+                for combination in combinations(possible_roles, 2):
+                    if combination not in negotiations["activities"]:
+                        negotiations["activities"][combination] = 0
+                    negotiations["activities"][combination] += 1
+                possible_roles = RoleAgent.check_best_role(user, roles_attitude, role_agents)
+                for combination in combinations(possible_roles, 2):
+                    if combination not in negotiations["attitude"]:
+                        negotiations["attitude"][combination] = 0
+                    negotiations["attitude"][combination] += 1
+            for key in negotiations:
+                print(key, negotiations[key])
 
     @staticmethod
     def check_best_role(user, roles, role_agents):
         user_role = None
         min_value = -1000
+        possible_roles = []
         for role in roles:
             for role_agent in role_agents:
                 if role_agent.role == role:
-                    if user in role_agent.dictionary and (min_value > role_agent.dictionary[user] or user_role is None):
-                        user_role = role
-                        min_value = role_agent.dictionary[user]
+                    if user in role_agent.selected:
+                        possible_roles.append(role)
+                        if min_value > role_agent.dictionary[user] or user_role is None:
+                            user_role = role
+                            min_value = role_agent.dictionary[user]
         if user_role is not None:
             user.add_role(user_role, RoleAgent.group)
+        return possible_roles
