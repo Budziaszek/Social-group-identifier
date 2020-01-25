@@ -6,12 +6,12 @@ from mesa import Model
 from mesa.time import RandomActivation
 from mesa.datacollection import DataCollector
 
-from RoleAgent import RoleAgent
+from role_agent import RoleAgent
 from config import NUMBER_OF_USERS
 from utils import define_user_interests, define_user_actions_probabilities
-from UserAgent import UserAgent
+from user_agent import UserAgent
 from role_types import roles
-from GroupAgent import GroupAgent
+from group_agent import GroupAgent
 
 from data_collector_utils import get_number_of_post_written, biggest_group
 

@@ -1,4 +1,4 @@
-from UserAgent import UserAgent
+from user_agent import UserAgent
 
 
 def get_number_of_post_written(agent):
