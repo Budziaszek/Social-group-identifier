@@ -6,7 +6,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 from action_types import ACTIONS
-from config import TAGS
+from consts import TAGS
 
 
 # check_influence_distribution()

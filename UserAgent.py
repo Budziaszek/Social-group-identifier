@@ -4,8 +4,9 @@ from collections import defaultdict
 from mesa import Agent
 from numpy import mean
 
+from consts import TAGS
 from Actions import Post, Reaction, Comment
-from config import TAGS, INITIAL_RELATION_VALUE, RELATION_DECAY_PER_CYCLE, MIN_CHANCE_FOR_FRIENDS
+from config import INITIAL_RELATION_VALUE, RELATION_DECAY_PER_CYCLE, MIN_CHANCE_FOR_FRIENDS
 from action_types import REACT, WRITE_COMMENT, SHARE_POST, WRITE_POST
 from role_types import roles, roles_influence, roles_neighbors, roles_activities, roles_attitude
 

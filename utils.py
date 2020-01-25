@@ -1,6 +1,6 @@
 import numpy as np
 import random
-from config import TAGS
+from consts import TAGS
 from action_types import ACTIONS
 
 
