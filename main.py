@@ -6,6 +6,9 @@ from data_collector_utils import plot_stats
 model = SiteModel(NUMBER_OF_USERS)
 
 for step in range(NUMBER_OF_STEPS):
+    for user in model.users:
+        user.reset()
+
     print("_____________SIMULATION_" + str(step) + "_____________")
     for i in range(NUMBER_OF_SIMULATION_STEPS):
         model.step()
@@ -26,9 +29,6 @@ for step in range(NUMBER_OF_STEPS):
     # for user in model.users:
     #     user.present_roles()
     print("Roles assigned")
-
-    for user in model.users:
-        user.reset()
 
 plot_stats(model)
 

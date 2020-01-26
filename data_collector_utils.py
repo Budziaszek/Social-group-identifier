@@ -66,7 +66,7 @@ def plot_roles_negotiations_histogram(model):
     for type_of_group in [roles_influence, roles_neighbors, roles_activities, roles_attitude]:
         plt.figure()
         plt.title('Histogram of negotiations - roles from {}'.format(get_name(type_of_group)))
-        plt.bar([key[0] + "-" + key[1] for key in model.negotiations[get_name(type_of_group)].keys()],
+        plt.bar([key[0][0:3] + "-" + key[1][0:3] for key in model.negotiations[get_name(type_of_group)].keys()],
                 model.negotiations[get_name(type_of_group)].values(), width=1, color='g')
         plt.xticks(rotation=90)
 
