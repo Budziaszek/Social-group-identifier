@@ -9,45 +9,49 @@ from role_types import roles_influence, roles_neighbors, roles_activities, roles
 
 class RoleAgent(Agent):
     group = None
+    arr_inf = None
+    arr_act = None
+    arr_pos = None
+    arr_neg = None
+    arr_n_in = None
+    arr_n_out = None
 
     def __init__(self, unique_id, role, model):
         super().__init__(unique_id, model)
         self.role = role
         self.selected = []
         self.dictionary = {}
-        self.arr_inf = None
-        self.arr_act = None
-        self.arr_pos = None
-        self.arr_neg = None
-        self.arr_n_in = None
-        self.arr_n_out = None
+
+    @staticmethod
+    def calculate_parameters(group):
+        RoleAgent.group = group
+
+        RoleAgent.arr_inf = [u.influence_by_edges for u in RoleAgent.group.group_members]
+        RoleAgent.arr_act = [u.activity_by_edges for u in RoleAgent.group.group_members]
+
+        RoleAgent.arr_pos = [u.number_of_positive_actions for u in RoleAgent.group.group_members]
+        RoleAgent.arr_neg = [u.number_of_negative_actions for u in RoleAgent.group.group_members]
+
+        RoleAgent.arr_n_in = [u.number_of_neighbors_in_group for u in RoleAgent.group.group_members]
+        RoleAgent.arr_n_out = [u.number_of_neighbors_outside_the_group for u in RoleAgent.group.group_members]
 
     def determine_users_roles(self):
         self.selected = {}
         self.dictionary = {}
 
-        self.arr_inf = [u.influence_by_edges for u in self.group.group_members]
-        self.arr_act = [u.activity_by_edges for u in self.group.group_members]
-
-        self.arr_pos = [u.number_of_positive_actions for u in self.group.group_members]
-        self.arr_neg = [u.number_of_negative_actions for u in self.group.group_members]
-
-        self.arr_n_in = [u.number_of_neighbors_in_group for u in self.group.group_members]
-        self.arr_n_out = [u.number_of_neighbors_outside_the_group for u in self.group.group_members]
-
-        for user in self.group.group_members:
+        for user in RoleAgent.group.group_members:
             if CURR_MODE is MODE_WITHOUT_NEGOTIATIONS:
                 self.check_criteria(user)
             else:
                 self.check_criteria(user, self.dictionary)
         if self.role in roles_influence:
-            num_of_users = floor(len(self.group.group_members) / (len(roles_influence) * 1.5))
+            num_of_users = floor(len(RoleAgent.group.group_members) / (len(roles_influence) * 1.5))
         elif self.role in roles_neighbors:
-            num_of_users = floor(len(self.group.group_members) / (len(roles_neighbors) * 1.5))
+            num_of_users = floor(len(RoleAgent.group.group_members) / (len(roles_neighbors) * 1.5))
         elif self.role in roles_activities:
-            num_of_users = floor(len(self.group.group_members) / (len(roles_activities) * 1.5))
+            num_of_users = floor(len(RoleAgent.group.group_members) / (len(roles_activities) * 1.5))
         else:
-            num_of_users = floor(len(self.group.group_members) / (len(roles_attitude) * 1.5))
+            num_of_users = floor(len(RoleAgent.group.group_members) / (len(roles_attitude) * 1.5))
         if num_of_users == 0:
             return
         self.selected = sorted(self.dictionary, key=self.dictionary.get)[0:num_of_users]
@@ -64,70 +68,73 @@ class RoleAgent(Agent):
         user.add_role(self.role, group)
 
     def check_influence_role(self, user, dictionary=None):
-        influence = RoleAgent.normalize(user.get_influence_by_edges(self.group), min(self.arr_inf), max(self.arr_inf))
-        activity = RoleAgent.normalize(user.get_activity_by_edges(self.group), min(self.arr_act), max(self.arr_act))
+        influence = RoleAgent.normalize(user.get_influence_by_edges(RoleAgent.group),
+                                        min(RoleAgent.arr_inf), max(RoleAgent.arr_inf))
+        activity = RoleAgent.normalize(user.get_activity_by_edges(RoleAgent.group),
+                                       min(RoleAgent.arr_act), max(RoleAgent.arr_act))
 
         if self.role == "Spamer":
             if dictionary is None and influence <= 0.3 and activity >= 0.7:
-                self.assign_role(user, self.group)
+                self.assign_role(user, RoleAgent.group)
             elif dictionary is not None:
                 dictionary[user] = abs(0.0 - influence) + abs(1.0 - activity)
         elif self.role == "Celebryta":
             if dictionary is None and influence >= 0.7 and activity <= 0.3:
-                self.assign_role(user, self.group)
+                self.assign_role(user, RoleAgent.group)
             elif dictionary is not None:
                 dictionary[user] = abs(1.0 - influence) + abs(0.0 - activity)
         elif self.role == "Popularny":
             if dictionary is None and influence >= 0.7 and activity >= 0.7:
-                self.assign_role(user, self.group)
+                self.assign_role(user, RoleAgent.group)
             elif dictionary is not None:
                 dictionary[user] = abs(1.0 - influence) + abs(1.0 - activity)
         elif self.role == "Nowy":
             if dictionary is None and influence <= 0.3 and activity <= 0.3:
-                self.assign_role(user, self.group)
+                self.assign_role(user, RoleAgent.group)
             elif dictionary is not None:
                 dictionary[user] = abs(0.0 - influence) + abs(0.0 - activity)
 
     def check_neighbors_role(self, user, dictionary=None):
-        neighbors_in = RoleAgent.normalize(user.get_number_of_neighbors_in_group(self.group),
-                                           min(self.arr_n_in), max(self.arr_n_in))
-        neighbors_outside = RoleAgent.normalize(user.get_number_of_neighbors_outside_the_group(self.group),
-                                                min(self.arr_n_out), max(self.arr_n_out))
+        neighbors_in = RoleAgent.normalize(user.get_number_of_neighbors_in_group(RoleAgent.group),
+                                           min(RoleAgent.arr_n_in), max(RoleAgent.arr_n_in))
+        neighbors_outside = RoleAgent.normalize(user.get_number_of_neighbors_outside_the_group(RoleAgent.group),
+                                                min(RoleAgent.arr_n_out), max(RoleAgent.arr_n_out))
         if self.role == "Koncentrator":
             if dictionary is None and neighbors_in >= 0.7 and neighbors_outside < 0.7:
-                self.assign_role(user, self.group)
+                self.assign_role(user, RoleAgent.group)
             elif dictionary is not None:
                 dictionary[user] = abs(1.0 - neighbors_in) + abs(0.0 - neighbors_outside)
         elif self.role == "Pośrednik":
             if dictionary is None and neighbors_in < 0.7 and neighbors_outside >= 0.7:
-                self.assign_role(user, self.group)
+                self.assign_role(user, RoleAgent.group)
             elif dictionary is not None:
                 dictionary[user] = abs(0.0 - neighbors_in) + abs(1.0 - neighbors_outside)
         elif self.role == "Wszędobylski":
             if dictionary is None and neighbors_in >= 0.7 and neighbors_outside >= 0.7:
-                self.assign_role(user, self.group)
+                self.assign_role(user, RoleAgent.group)
             elif dictionary is not None:
                 dictionary[user] = abs(1.0 - neighbors_in) + abs(1.0 - neighbors_outside)
 
     def check_attitude_role(self, user, dictionary=None):
-        positive = RoleAgent.normalize(user.get_number_of_positive_actions(self.group),
-                                       min(self.arr_pos), max(self.arr_pos))
-        negative = RoleAgent.normalize(user.get_number_of_negative_actions(self.group),
-                                       min(self.arr_neg), max(self.arr_neg))
+        positive = RoleAgent.normalize(user.get_number_of_positive_actions(RoleAgent.group),
+                                       min(RoleAgent.arr_pos), max(RoleAgent.arr_pos))
+        negative = RoleAgent.normalize(user.get_number_of_negative_actions(RoleAgent.group),
+                                       min(RoleAgent.arr_neg), max(RoleAgent.arr_neg))
         ratio = positive / negative if negative > 0 else int(positive > 0)
+
         if self.role == "Narzekacz":
             if dictionary is None and ratio <= 0.3:
-                self.assign_role(user, self.group)
+                self.assign_role(user, RoleAgent.group)
             elif dictionary is not None:
                 dictionary[user] = abs(0.0 - ratio)
         elif self.role == "Komplemenciarz":
             if dictionary is None and ratio >= 0.7:
-                self.assign_role(user, self.group)
+                self.assign_role(user, RoleAgent.group)
             elif dictionary is not None:
                 dictionary[user] = abs(1.0 - ratio)
         elif self.role == "Neutralny_Zbalansowany":
             if dictionary is None and 0.3 < ratio < 0.7:
-                self.assign_role(user, self.group)
+                self.assign_role(user, RoleAgent.group)
             elif dictionary is not None:
                 dictionary[user] = abs(0.5 - ratio)
 
@@ -150,27 +157,27 @@ class RoleAgent(Agent):
             return
         if self.role == "Lurker":
             if dictionary is None and v4 >= 0.7:
-                self.assign_role(user, self.group)
+                self.assign_role(user, RoleAgent.group)
             elif dictionary is not None:
                 dictionary[user] = abs(0.0 - v1) + abs(0.0 - v2) + abs(0.0 - v3) + abs(1.0 - v4)
         elif self.role == "Komentujący":
             if dictionary is None and v1 >= 0.7:
-                self.assign_role(user, self.group)
+                self.assign_role(user, RoleAgent.group)
             elif dictionary is not None:
                 dictionary[user] = abs(1.0 - v1) + abs(0.0 - v2) + abs(0.0 - v3) + abs(0.0 - v4)
         elif self.role == "Piszący":
             if dictionary is None and v2 >= 0.7:
-                self.assign_role(user, self.group)
+                self.assign_role(user, RoleAgent.group)
             elif dictionary is not None:
                 dictionary[user] = abs(0.0 - v1) + abs(1.0 - v2) + abs(0.0 - v3) + abs(0.0 - v4)
         elif self.role == "Udostępniający":
             if dictionary is None and v3 >= 0.7:
-                self.assign_role(user, self.group)
+                self.assign_role(user, RoleAgent.group)
             elif dictionary is not None:
                 dictionary[user] = abs(0.0 - v1) + abs(0.0 - v2) + abs(1.0 - v3) + abs(0.0 - v4)
         elif self.role == "Zbalansowany":
             if dictionary is None and 0.15 < v1 < 0.35 and 0.15 < v2 < 0.35 and 0.15 < v3 < 0.35 and 0.15 < v4 < 0.35:
-                user.add_role(self.role, self.group)
+                user.add_role(self.role, RoleAgent.group)
             elif dictionary is not None:
                 dictionary[user] = abs(0.25 - v1) + abs(0.25 - v2) + abs(0.25 - v3) + abs(0.25 - v4)
 

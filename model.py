@@ -106,9 +106,9 @@ class SiteModel(Model):
             self.role_agents.append(role_agent)
 
         for group in groups:
-            RoleAgent.group = group
             for user in group.group_members:
                 user.update(group)
+            RoleAgent.calculate_parameters(group)
             for agent in self.role_agents:
                 agent.determine_users_roles()
             new_dict = RoleAgent.negotiate(self.role_agents, self.users)
