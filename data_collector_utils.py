@@ -23,6 +23,7 @@ def plot_stats(model):
     plot_post_written(model)
     plt.show()
 
+
 def plot_biggest_group(model):
     """Plot size of the biggest group throughout simulation"""
     """plt.plot must be called after"""
@@ -40,5 +41,7 @@ def plot_post_written(model):
 
     plt.figure()
     plt.title('Number of post written throughout whole program for agent 0')
+    plt.xlabel("Iterations")
+    plt.ylabel("Number of post written")
     one_agent_wealth = number_of_post_written.xs(0, level="AgentID")
     one_agent_wealth.Post_written.plot()
