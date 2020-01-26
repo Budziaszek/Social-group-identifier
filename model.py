@@ -5,6 +5,7 @@ import numpy as np
 from mesa import Model
 from mesa.time import RandomActivation
 from mesa.datacollection import DataCollector
+from itertools import combinations
 
 from role_agent import RoleAgent
 from config import NUMBER_OF_USERS
@@ -102,3 +103,19 @@ class SiteModel(Model):
             for agent in self.role_agents:
                 agent.determine_users_roles()
             RoleAgent.negotiate(self.role_agents, self.users)
+
+    def check_roles_combinations(self):
+        possible_combinations = list(combinations(roles, 2))
+        counter = {comb: 0 for comb in possible_combinations}
+        for key in counter:
+            for group in self.groups:
+                for user in group.group_members:
+                    if key[0] in user.get_roles(group.unique_id) and key[1] in user.get_roles(group.unique_id):
+                        counter[key] += 1
+        print("ROLES COMBINATIONS")
+        for key in counter:
+            print(key, counter[key])
+
+
+
+

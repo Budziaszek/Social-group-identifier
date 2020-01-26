@@ -186,6 +186,7 @@ class RoleAgent(Agent):
 
     @staticmethod
     def negotiate(role_agents, users):
+        print("NEGOTIATIONS")
         if CURR_MODE is MODE_WITH_NEGOTIATIONS:
             negotiations = {"influence": {}, "neighbors": {}, "activities": {}, "attitude": {}}
             for user in users:
@@ -211,6 +212,7 @@ class RoleAgent(Agent):
                     negotiations["attitude"][combination] += 1
             for key in negotiations:
                 print(key, negotiations[key])
+            print()
 
     @staticmethod
     def check_best_role(user, roles, role_agents):

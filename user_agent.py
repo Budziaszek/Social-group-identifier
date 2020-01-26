@@ -35,6 +35,12 @@ class UserAgent(Agent):
             "share_post": 2
         }
 
+    def get_roles(self, group):
+        return [self.get_role_from_type(group, roles_influence),
+                self.get_role_from_type(group, roles_neighbors),
+                self.get_role_from_type(group, roles_activities),
+                self.get_role_from_type(group, roles_attitude)]
+
     def get_relations(self):
         return self._relations
 
