@@ -1,13 +1,15 @@
 """This file should include only configuration values which can be parameterized for simulation"""
 
+NUMBER_OF_STEPS = 5
+
 # User consts
 INITIAL_RELATION_VALUE = 1
 RELATION_DECAY_PER_CYCLE = 0.9
 MIN_CHANCE_FOR_FRIENDS = 0.015
 
 # Simulation consts
-NUMBER_OF_USERS = 10
-NUMBER_OF_STEPS = 10
+NUMBER_OF_USERS = 100
+NUMBER_OF_SIMULATION_STEPS = 10
 MAX_NUMBER_OF_GROUPS = 2
 
 # Group consts
