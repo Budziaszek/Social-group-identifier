@@ -34,6 +34,7 @@ class SiteModel(Model):
         self.role_agents = []
         self.groups = []
         self.curr_user_id = 0
+        self.negotiations = {}
 
         # Create users
         for i in range(num_agents):
@@ -91,6 +92,12 @@ class SiteModel(Model):
             user.add_random_friends(3)
             user.expand_influence()
 
+    @staticmethod
+    def merge_two_dicts(x, y):
+        z = x.copy()
+        z.update(y)
+        return z
+
     def assign_roles_init(self, groups):
         # Create role agents
         for i, role in enumerate(roles):
@@ -102,7 +109,15 @@ class SiteModel(Model):
             RoleAgent.group = group
             for agent in self.role_agents:
                 agent.determine_users_roles()
-            RoleAgent.negotiate(self.role_agents, self.users)
+            new_dict = RoleAgent.negotiate(self.role_agents, self.users)
+            for key in new_dict:
+                if key in self.negotiations:
+                    self.negotiations[key] = self.merge_two_dicts(self.negotiations[key], new_dict[key])
+                else:
+                    self.negotiations[key] = new_dict[key]
+        # for key in self.negotiations:
+        #     print(key, self.negotiations[key])
+        # print()
 
     def check_roles_combinations(self):
         possible_combinations = list(combinations(roles, 2))
@@ -112,9 +127,10 @@ class SiteModel(Model):
                 for user in group.group_members:
                     if key[0] in user.get_roles(group.unique_id) and key[1] in user.get_roles(group.unique_id):
                         counter[key] += 1
-        print("ROLES COMBINATIONS")
-        for key in counter:
-            print(key, counter[key])
+        # print("ROLES COMBINATIONS")
+        # for key in counter:
+        #     print(key, counter[key])
+        return counter
 
 
 

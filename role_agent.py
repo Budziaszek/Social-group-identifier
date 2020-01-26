@@ -4,7 +4,7 @@ from math import floor
 from mesa import Agent
 
 from config import CURR_MODE, MODE_WITHOUT_NEGOTIATIONS, MODE_WITH_NEGOTIATIONS
-from role_types import roles_influence, roles_neighbors, roles_activities, roles_attitude
+from role_types import roles_influence, roles_neighbors, roles_activities, roles_attitude, get_name
 
 
 class RoleAgent(Agent):
@@ -186,33 +186,18 @@ class RoleAgent(Agent):
 
     @staticmethod
     def negotiate(role_agents, users):
-        print("NEGOTIATIONS")
         if CURR_MODE is MODE_WITH_NEGOTIATIONS:
-            negotiations = {"influence": {}, "neighbors": {}, "activities": {}, "attitude": {}}
+            roles = [roles_influence, roles_neighbors, roles_activities, roles_attitude]
+            negotiations = {get_name(role): {} for role in roles}
+
             for user in users:
-                possible_roles = RoleAgent.check_best_role(user, roles_influence, role_agents)
-                for combination in combinations(possible_roles, 2):
-                    if combination not in negotiations["influence"]:
-                        negotiations["influence"][combination] = 0
-                    negotiations["influence"][combination] += 1
-                possible_roles = RoleAgent.check_best_role(user, roles_neighbors, role_agents)
-                for combination in combinations(possible_roles, 2):
-                    if combination not in negotiations["neighbors"]:
-                        negotiations["neighbors"][combination] = 0
-                    negotiations["neighbors"][combination] += 1
-                possible_roles = RoleAgent.check_best_role(user, roles_activities, role_agents)
-                for combination in combinations(possible_roles, 2):
-                    if combination not in negotiations["activities"]:
-                        negotiations["activities"][combination] = 0
-                    negotiations["activities"][combination] += 1
-                possible_roles = RoleAgent.check_best_role(user, roles_attitude, role_agents)
-                for combination in combinations(possible_roles, 2):
-                    if combination not in negotiations["attitude"]:
-                        negotiations["attitude"][combination] = 0
-                    negotiations["attitude"][combination] += 1
-            for key in negotiations:
-                print(key, negotiations[key])
-            print()
+                for role in roles:
+                    possible_roles = RoleAgent.check_best_role(user, role, role_agents)
+                    for combination in combinations(possible_roles, 2):
+                        if combination not in negotiations[get_name(role)]:
+                            negotiations[get_name(role)][combination] = 1
+                        negotiations[get_name(role)][combination] += 1
+            return negotiations
 
     @staticmethod
     def check_best_role(user, roles, role_agents):

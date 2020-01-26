@@ -15,13 +15,15 @@ print("________________GROUPS________________")
 model.create_groups(MAX_NUMBER_OF_GROUPS)
 for _ in range(NUMBER_OF_GROUP_STEPS):
     model.step_groups()
-for group in model.groups:
-    group.present_group()
+# for group in model.groups:
+#     group.present_group()
+print("Groups created")
 
 print("________________ROLES_________________")
 model.assign_roles_init(model.groups)
-for user in model.users:
-    user.present_roles()
+# for user in model.users:
+#     user.present_roles()
+print("Roles assigned")
 
 model.check_roles_combinations()
 plot_stats(model)

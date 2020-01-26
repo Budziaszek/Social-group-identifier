@@ -23,6 +23,8 @@ def plot_stats(model):
     plot_biggest_group(model)
     plot_post_written(model)
     plot_roles_histogram(model)
+    plot_roles_negotiations_histogram(model)
+    plot_roles_combinations_histogram(model)
     plt.show()
 
 
@@ -58,3 +60,25 @@ def plot_roles_histogram(model):
         plt.figure()
         plt.title('Histogram of roles from {}'.format(get_name(type_of_group)))
         plt.bar(roles_dict.keys(), roles_dict.values(), width=1, color='g')
+
+
+def plot_roles_negotiations_histogram(model):
+    for type_of_group in [roles_influence, roles_neighbors, roles_activities, roles_attitude]:
+        plt.figure()
+        plt.title('Histogram of negotiations - roles from {}'.format(get_name(type_of_group)))
+        plt.bar([key[0] + "-" + key[1] for key in model.negotiations[get_name(type_of_group)].keys()],
+                model.negotiations[get_name(type_of_group)].values(), width=1, color='g')
+
+
+def plot_roles_combinations_histogram(model):
+        plt.figure()
+        plt.title('Histogram of roles combinations (only existing ones)')
+        dictionary = model.check_roles_combinations()
+        new_dictionary = {}
+        for key in dictionary:
+            if dictionary[key] != 0:
+                new_key = key[0][0:3] + '-' + key[1][0:3]
+                new_dictionary[new_key] = dictionary[key]
+
+        plt.bar(new_dictionary.keys(), new_dictionary.values(), width=1, color='g')
+        plt.xticks(rotation=90)
