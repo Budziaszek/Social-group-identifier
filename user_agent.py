@@ -34,6 +34,20 @@ class UserAgent(Agent):
             "react": 0.5,
             "share_post": 2
         }
+        self.influence_by_edges = None
+        self.activity_by_edges = None
+        self.number_of_positive_actions = None
+        self.number_of_negative_actions = None
+        self.number_of_neighbors_in_group = None
+        self.number_of_neighbors_outside_the_group = None
+
+    def update(self, group):
+        self.influence_by_edges = self.get_influence_by_edges(group)
+        self.activity_by_edges = self.get_activity_by_edges(group)
+        self.number_of_positive_actions = self.get_number_of_positive_actions(group)
+        self.number_of_negative_actions = self.get_number_of_positive_actions(group)
+        self.number_of_neighbors_in_group = self.get_number_of_neighbors_in_group(group)
+        self.number_of_neighbors_outside_the_group = self.get_number_of_neighbors_outside_the_group(group)
 
     def get_roles(self, group):
         return [self.get_role_from_type(group, roles_influence),
