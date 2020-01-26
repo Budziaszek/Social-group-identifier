@@ -9,3 +9,13 @@ roles.extend(roles_neighbors)
 roles.extend(roles_activities)
 roles.extend(roles_attitude)
 
+
+def get_name(check_roles):
+    if check_roles == roles_influence:
+        return "Influence"
+    elif check_roles == roles_neighbors:
+        return "Neighbors"
+    elif check_roles == roles_attitude:
+        return "Attitude"
+    else:
+        return "Activities"

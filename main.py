@@ -23,4 +23,5 @@ model.assign_roles_init(model.groups)
 for user in model.users:
     user.present_roles()
 
+
 plot_stats(model)
