@@ -8,7 +8,7 @@ from consts import TAGS
 from actions import Post, Reaction, Comment
 from config import INITIAL_RELATION_VALUE, RELATION_DECAY_PER_CYCLE, MIN_CHANCE_FOR_FRIENDS
 from action_types import REACT, WRITE_COMMENT, SHARE_POST, WRITE_POST
-from role_types import roles, roles_influence, roles_neighbors, roles_activities, roles_attitude
+from role_types import roles_influence, roles_neighbors, roles_activities, roles_attitude
 
 
 class UserAgent(Agent):
@@ -121,6 +121,7 @@ class UserAgent(Agent):
         return "Normal"
 
     def present_roles(self):
+        """Prints roles in human-readable format"""
         print("User" + str(self.unique_id) + ": roles=")
         for group in self._roles:
             print("\tGroup" + str(group) + " -> ["
@@ -129,6 +130,18 @@ class UserAgent(Agent):
                   + self.get_role_from_type(group, roles_activities) + ", "
                   + self.get_role_from_type(group, roles_attitude) + "]")
         print('')
+
+    def fill_roles(self, roles_dict, type_of_group):
+        """Returns number of roles performed for each role"""
+        for group in self._roles:
+            role = self.get_role_from_type(group, type_of_group)
+
+            if role in roles_dict:
+                roles_dict[role] += 1
+            else:
+                roles_dict[role] = 0
+
+        return roles_dict
 
     def update_relation(self, user, action_type):
         self._relations[user] += self._action_relation_values[action_type]
