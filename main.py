@@ -27,5 +27,8 @@ for step in range(NUMBER_OF_STEPS):
     #     user.present_roles()
     print("Roles assigned")
 
+    for user in model.users:
+        user.reset()
+
 plot_stats(model)
 

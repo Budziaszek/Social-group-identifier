@@ -41,6 +41,10 @@ class UserAgent(Agent):
         self.number_of_neighbors_in_group = None
         self.number_of_neighbors_outside_the_group = None
 
+    def reset(self):
+        # TODO reset for next simulation step
+        self._roles = defaultdict(list)
+
     def update(self, group):
         self.influence_by_edges = self.get_influence_by_edges(group)
         self.activity_by_edges = self.get_activity_by_edges(group)
