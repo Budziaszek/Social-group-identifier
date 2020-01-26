@@ -47,8 +47,9 @@ class SiteModel(Model):
             user.add_random_friends(round(math.ceil(random.choice(self.exp_normalized) * num_agents / 3)) + 1)
             user.expand_influence()
 
-        self.datacollector = DataCollector(model_reporters={"biggestGroup": biggest_group},
-                                           agent_reporters={"Post_written": get_number_of_post_written})
+        self.data_collector = DataCollector(agent_reporters={"Post_written": get_number_of_post_written})
+
+        self.data_group_collector = DataCollector(model_reporters={"biggestGroup": biggest_group})
 
     def increment_curr_user_id(self):
         self.curr_user_id += 1
@@ -66,12 +67,12 @@ class SiteModel(Model):
         return self.influence_values.pop()
 
     def step(self):
-        self.datacollector.collect(self)
+        self.data_collector.collect(self)
         self.schedule.step()
         self.add_new_users()
 
     def step_groups(self):
-        self.datacollector.collect(self)
+        self.data_group_collector.collect(self)
         self.schedule_groups.step()
 
     def add_new_users(self):
