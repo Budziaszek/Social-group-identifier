@@ -52,7 +52,7 @@ def plot_biggest_group(model):
     """Plot size of the biggest group throughout simulation"""
     """plt.plot must be called after"""
     biggest_group = model.data_group_collector.get_model_vars_dataframe()
-    biggest_group_plot = biggest_group.plot()
+    biggest_group_plot = biggest_group["biggestGroup"].plot()
     biggest_group_plot.set_xlabel("Iterations")
     biggest_group_plot.set_ylabel("Size of the biggest group")
     biggest_group_plot.set_title("Size of the biggest group throughout simulation")

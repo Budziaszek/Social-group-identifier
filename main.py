@@ -2,7 +2,6 @@ from model import SiteModel
 from config import NUMBER_OF_SIMULATION_STEPS, NUMBER_OF_USERS, MAX_NUMBER_OF_GROUPS, NUMBER_OF_GROUP_STEPS, \
     NUMBER_OF_STEPS
 from data_collector_utils import plot_stats
-from check_utils import check_number_of_friends_distribution, plot_dictionary
 
 model = SiteModel(NUMBER_OF_USERS)
 model.create_groups(MAX_NUMBER_OF_GROUPS)
