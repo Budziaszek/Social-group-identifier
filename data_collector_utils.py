@@ -28,6 +28,9 @@ def group_size_dist(model):
     no_bars = 10
     sizes = [0 for _ in range(no_bars)]
     for gr in model.groups:
+        if gr.is_empty:
+            continue
+
         index = int(gr.size / (MAX_GROUP_MEMBERS + 1) * 10)
         sizes[index] += 1
     return sizes
