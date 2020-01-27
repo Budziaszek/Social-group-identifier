@@ -49,10 +49,10 @@ class GroupAgent(Agent):
                 del self.group_members[i]
 
     def search_new_members(self):
-        if len(self.group_members) >= MAX_GROUP_MEMBERS:
-            return False  # TODO more elegant way to leave
-
         for _ in range(USERS_SEARCHED_PER_ITERATION):
+            if len(self.group_members) >= MAX_GROUP_MEMBERS:  # group is full, so leave loop and function
+                break
+
             chosen_user = choice(self.model.users)
             while chosen_user in self.group_members:
                 chosen_user = choice(self.model.users)
