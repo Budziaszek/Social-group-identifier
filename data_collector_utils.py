@@ -5,7 +5,8 @@ from config import MAX_GROUP_MEMBERS
 
 
 def get_number_of_groups(model):
-    return len(model.groups)
+    """Get number of non-empty groups"""
+    return sum(map(lambda x: int(x.size > 0), model.groups))
 
 
 def get_number_of_post_written(agent):
