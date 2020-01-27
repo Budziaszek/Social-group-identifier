@@ -1,6 +1,7 @@
 from user_agent import UserAgent
 import matplotlib.pyplot as plt
 from role_types import get_name, roles_influence, roles_neighbors, roles_activities, roles_attitude
+from config import MAX_GROUP_MEMBERS
 
 
 def get_number_of_post_written(agent):
@@ -16,6 +17,16 @@ def biggest_group(model):
         if gr.size > biggest:
             biggest = gr.size
     return biggest
+
+
+def group_size_dist(model):
+    """Collects data about distribution of group sizes divided into no_bars=10 ranges"""
+    no_bars = 10
+    sizes = [0 for _ in range(no_bars)]
+    for gr in model.groups:
+        index = int(gr.size/(MAX_GROUP_MEMBERS + 1) * 10)
+        sizes[index] += 1
+    return sizes
 
 
 def plot_stats(model):
