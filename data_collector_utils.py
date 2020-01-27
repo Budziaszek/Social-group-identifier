@@ -105,7 +105,7 @@ def plot_number_of_groups_during_simulation(model):
     data_group_data = model.data_group_collector.get_model_vars_dataframe()
     group_sizes = data_group_data["number_of_groups"]
     plt.figure()
-    plt.title('Number of groups')
+    plt.title('Number of groups during simulation')
     plt.xlabel('Iterations')
     plt.ylabel('Number of groups')
     plt.plot(group_sizes.tolist())
