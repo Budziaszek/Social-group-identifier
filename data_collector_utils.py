@@ -4,6 +4,10 @@ from role_types import get_name, roles_influence, roles_neighbors, roles_activit
 from config import MAX_GROUP_MEMBERS
 
 
+def get_number_of_groups(model):
+    return len(model.groups)
+
+
 def get_number_of_post_written(agent):
     if type(agent) is UserAgent:
         return agent.get_number_of_posts()
@@ -24,7 +28,7 @@ def group_size_dist(model):
     no_bars = 10
     sizes = [0 for _ in range(no_bars)]
     for gr in model.groups:
-        index = int(gr.size/(MAX_GROUP_MEMBERS + 1) * 10)
+        index = int(gr.size / (MAX_GROUP_MEMBERS + 1) * 10)
         sizes[index] += 1
     return sizes
 
@@ -36,6 +40,7 @@ def plot_stats(model):
     plot_roles_histogram(model)
     plot_roles_negotiations_histogram(model)
     plot_roles_combinations_histogram(model)
+    plot_number_of_groups_during_simulation(model)
     plt.show()
 
 
@@ -83,14 +88,24 @@ def plot_roles_negotiations_histogram(model):
 
 
 def plot_roles_combinations_histogram(model):
-        plt.figure()
-        plt.title('Histogram of roles combinations (only existing ones)')
-        dictionary = model.check_roles_combinations()
-        new_dictionary = {}
-        for key in dictionary:
-            if dictionary[key] != 0:
-                new_key = key[0][0:3] + '-' + key[1][0:3]
-                new_dictionary[new_key] = dictionary[key]
+    plt.figure()
+    plt.title('Histogram of roles combinations (only existing ones)')
+    dictionary = model.check_roles_combinations()
+    new_dictionary = {}
+    for key in dictionary:
+        if dictionary[key] != 0:
+            new_key = key[0][0:3] + '-' + key[1][0:3]
+            new_dictionary[new_key] = dictionary[key]
 
-        plt.bar(new_dictionary.keys(), new_dictionary.values(), width=1, color='g')
-        plt.xticks(rotation=90)
+    plt.bar(new_dictionary.keys(), new_dictionary.values(), width=1, color='g')
+    plt.xticks(rotation=90)
+
+
+def plot_number_of_groups_during_simulation(model):
+    data_group_data = model.data_group_collector.get_model_vars_dataframe()
+    group_sizes = data_group_data["number_of_groups"]
+    plt.figure()
+    plt.title('Number of groups')
+    plt.xlabel('Iterations')
+    plt.ylabel('Number of groups')
+    plt.plot(group_sizes.tolist())
