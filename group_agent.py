@@ -27,7 +27,7 @@ class GroupAgent(Agent):
         for userA in users_to_check:
             for userB in users_to_check:
                 value += userA.get_relation(userB)
-        return value / (len(users_to_check) * (len(users_to_check) - 1))  # TODO check correctness of returned values
+        return value / (len(users_to_check) * (len(users_to_check) - 1))
 
     def update_group(self):
         self._consistency = self.calculate_consistency(self.group_members)
