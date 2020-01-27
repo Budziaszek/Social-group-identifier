@@ -89,8 +89,7 @@ class SiteModel(Model):
                              self)
             self.schedule.add(user)
             self.users.append(user)
-        for user in self.users:
-            user.add_random_friends(3)
+            user.add_random_friends(10)
             user.expand_influence()
 
     @staticmethod

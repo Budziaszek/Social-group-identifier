@@ -76,6 +76,8 @@ def check__total_user_actions_probabilities(model):
 def check_number_of_friends_distribution(model):
     agent_data = [a.get_number_of_friends() for a in model.schedule.agents]
     plt.hist(agent_data)
+    plt.xlabel("Range of friends")
+    plt.ylabel("Users with x number of friends")
     plt.title("Number of friends")
     plt.show()
 

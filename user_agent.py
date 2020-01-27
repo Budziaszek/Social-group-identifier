@@ -23,12 +23,13 @@ class UserAgent(Agent):
         self._negative_actions_by_user = {}
         self._actions_probabilities = actions_probabilities
         self._influence = influence
-        self._friends = []
+        self._friends = set()
         self._roles = defaultdict(list)
         self._actions = {"write_comment": self.write_comment_to_post,
                          "write_post": self.write_post,
                          "react": self.react_to_post,
-                         "share_post": self.share_post}
+                         "share_post": self.share_post,
+                         "add_random_friends": self.add_random_friends}
         self._action_relation_values = {
             "write_comment": 1,
             "react": 0.5,
@@ -72,7 +73,11 @@ class UserAgent(Agent):
             return 0
 
     def get_number_of_friends(self):
-        return len(self.friends)
+        count = 0
+        for friend in self.friends:
+            if self in friend.friends:
+                count += 1
+        return count  # len(self.friends)
 
     def get_number_of_neighbors_in_group(self, group):
         neighbors_count = 0
@@ -187,10 +192,10 @@ class UserAgent(Agent):
             self._relations[user] *= RELATION_DECAY_PER_CYCLE
 
     def add_friend(self, user):
-        self._friends.append(user)
+        self._friends.add(user)
         self._relations[user] = INITIAL_RELATION_VALUE
 
-    def add_random_friends(self, num_of_friends):
+    def add_random_friends(self, num_of_friends=1):
         new_friends = random.choices(self.model.users, k=num_of_friends)
         for friend in new_friends:
             self.try_to_become_friends(friend)
@@ -208,9 +213,7 @@ class UserAgent(Agent):
         return self._friends
 
     def try_to_become_friends(self, user):
-        if user in self._friends:
-            return
-        mutual_friends = set(self._friends).intersection(user.friends)
+        mutual_friends = self._friends.intersection(user.friends)
         mutual_length = len(mutual_friends)
         mutual_friends_addition = mutual_length * 0.01 + MIN_CHANCE_FOR_FRIENDS
         if mutual_friends_addition > random.random():
@@ -319,6 +322,6 @@ class UserAgent(Agent):
                 self._actions[action]()
                 self._performed_actions[action] += 1
 
-        for user in self.model.schedule.agents:
-            self.try_to_become_friends(user)
+        # for user in self.model.users:
+        #     self.try_to_become_friends(user)
         self.decrease_connections()
