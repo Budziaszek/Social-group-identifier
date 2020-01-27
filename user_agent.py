@@ -34,6 +34,7 @@ class UserAgent(Agent):
             "react": 0.5,
             "share_post": 2
         }
+        self.relation_update_rate = 0.9
         self.influence_by_edges = None
         self.activity_by_edges = None
         self.number_of_positive_actions = None
@@ -44,6 +45,8 @@ class UserAgent(Agent):
     def reset(self):
         # TODO reset for next simulation step
         self._roles = defaultdict(list)
+        for key in self._relations:
+            self._relations[key] *= self.relation_update_rate
 
     def update(self, group):
         self.influence_by_edges = self.get_influence_by_edges(group)
