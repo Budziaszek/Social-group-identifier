@@ -47,6 +47,7 @@ class GroupAgent(Agent):
         for i in range(len(self.group_members)):
             if self.calculate_consistency(self.group_members[:i] + self.group_members[i + 1:]) > self._consistency:
                 del self.group_members[i]
+                break  # leave loop and function after deletion
 
     def search_new_members(self):
         for _ in range(USERS_SEARCHED_PER_ITERATION):
