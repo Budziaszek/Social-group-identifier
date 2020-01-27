@@ -14,7 +14,7 @@ from user_agent import UserAgent
 from role_types import roles
 from group_agent import GroupAgent
 
-from data_collector_utils import get_number_of_post_written, biggest_group, group_size_dist
+from data_collector_utils import get_number_of_post_written, biggest_group, group_size_dist, get_number_of_groups
 
 
 class SiteModel(Model):
@@ -52,7 +52,8 @@ class SiteModel(Model):
         self.data_collector = DataCollector(agent_reporters={"Post_written": get_number_of_post_written})
 
         self.data_group_collector = DataCollector(model_reporters={"biggestGroup": biggest_group,
-                                                                   "groupSizeDistribution": group_size_dist})
+                                                                   "groupSizeDistribution": group_size_dist,
+                                                                   "number_of_groups": get_number_of_groups})
 
     def increment_curr_user_id(self):
         self.curr_user_id += 1
@@ -133,7 +134,3 @@ class SiteModel(Model):
         # for key in counter:
         #     print(key, counter[key])
         return counter
-
-
-
-
