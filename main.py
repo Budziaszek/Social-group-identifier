@@ -5,6 +5,7 @@ from data_collector_utils import plot_stats
 from check_utils import check_number_of_friends_distribution, plot_dictionary
 
 model = SiteModel(NUMBER_OF_USERS)
+model.create_groups(MAX_NUMBER_OF_GROUPS)
 
 for step in range(NUMBER_OF_STEPS):
     for user in model.users:
@@ -20,7 +21,6 @@ for step in range(NUMBER_OF_STEPS):
     print(" Simulation finished!")
     print("________________GROUPS________________")
 
-    model.create_groups(MAX_NUMBER_OF_GROUPS)
     for _ in range(NUMBER_OF_GROUP_STEPS):
         model.step_groups()
     # for group in model.groups:
