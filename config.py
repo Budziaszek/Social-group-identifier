@@ -1,6 +1,6 @@
 """This file should include only configuration values which can be parameterized for simulation"""
 
-NUMBER_OF_STEPS = 5
+NUMBER_OF_STEPS = 10
 
 # User consts
 INITIAL_RELATION_VALUE = 1
@@ -15,9 +15,9 @@ MAX_NUMBER_OF_GROUPS = 10
 
 # Group consts
 NUMBER_OF_GROUP_STEPS = 10
-NUMBER_OF_INIT_TRIES = 20
+NUMBER_OF_INIT_TRIES = 10
 MIN_GROUP_CONSISTENCY = 0.1
-USERS_SEARCHED_PER_ITERATION = 5
+USERS_SEARCHED_PER_ITERATION = 50
 MAX_GROUP_MEMBERS = 0.5 * NUMBER_OF_USERS
 
 # Roles consts

@@ -26,7 +26,7 @@ def biggest_group(model):
 
 def group_size_dist(model):
     """Collects data about distribution of group sizes divided into no_bars=10 ranges"""
-    no_bars = 10
+    no_bars = 5
     sizes = [0 for _ in range(no_bars)]
     for gr in model.groups:
         if gr.is_empty:
@@ -45,6 +45,7 @@ def plot_stats(model):
     plot_roles_negotiations_histogram(model)
     plot_roles_combinations_histogram(model)
     plot_number_of_groups_during_simulation(model)
+    plot_group_size_distribution(model)
     plt.show()
 
 
@@ -113,3 +114,16 @@ def plot_number_of_groups_during_simulation(model):
     plt.xlabel('Iterations')
     plt.ylabel('Number of groups')
     plt.plot(group_sizes.tolist())
+
+
+def plot_group_size_distribution(model):
+    data_group_data = model.data_group_collector.get_model_vars_dataframe()
+    group_sizes = data_group_data["groupSizeDistribution"]
+    plt.figure()
+    plt.title('Group size distribution during simulation')
+    plt.xlabel('Iterations')
+    plt.ylabel('Number of groups')
+    group_sizes = list(map(list, zip(*group_sizes)))
+    for i, size in enumerate(group_sizes):
+        plt.plot(size, label=f'{int(i/len(group_sizes)*100)} to {int((i + 1)/len(group_sizes)*100)}%')
+    plt.legend()
