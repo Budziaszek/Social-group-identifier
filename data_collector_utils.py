@@ -1,3 +1,5 @@
+from collections import defaultdict
+
 from user_agent import UserAgent
 import matplotlib.pyplot as plt
 from role_types import get_name, roles_influence, roles_neighbors, roles_activities, roles_attitude
@@ -40,12 +42,14 @@ def group_size_dist(model):
 def plot_stats(model):
     """Main plot function, plot all stats"""
     plot_biggest_group(model)
+    plot_number_of_groups_during_simulation(model)
+    plot_group_size_distribution(model)
     plot_post_written(model)
     plot_roles_histogram(model)
     plot_roles_negotiations_histogram(model)
     plot_roles_combinations_histogram(model)
-    plot_number_of_groups_during_simulation(model)
-    plot_group_size_distribution(model)
+    plot_roles_changes(model)
+    plot_roles_changes_histogram(model)
     plt.show()
 
 
@@ -77,7 +81,6 @@ def plot_roles_histogram(model):
         roles_dict = {}
         for user in model.users:
             user.fill_roles(roles_dict, type_of_group)
-
         plt.figure()
         plt.title('Histogram of roles from {}'.format(get_name(type_of_group)))
         plt.bar(roles_dict.keys(), roles_dict.values(), width=1, color='g')
@@ -101,7 +104,6 @@ def plot_roles_combinations_histogram(model):
         if dictionary[key] != 0:
             new_key = key[0][0:3] + '-' + key[1][0:3]
             new_dictionary[new_key] = dictionary[key]
-
     plt.bar(new_dictionary.keys(), new_dictionary.values(), width=1, color='g')
     plt.xticks(rotation=90)
 
@@ -127,3 +129,25 @@ def plot_group_size_distribution(model):
     for i, size in enumerate(group_sizes):
         plt.plot(size, label=f'{int(i/len(group_sizes)*100)} to {int((i + 1)/len(group_sizes)*100)}%')
     plt.legend()
+
+
+def plot_roles_changes(model):
+    for type_of_group in [roles_influence, roles_neighbors, roles_activities, roles_attitude]:
+        plt.figure()
+        for role in type_of_group:
+            plt.plot(model.roles_count[role], label=role)
+        plt.title('Change of roles over time{}'.format(get_name(type_of_group)))
+        plt.xlabel('Iterations')
+        plt.ylabel('% of role')
+        plt.legend()
+
+
+def plot_roles_changes_histogram(model):
+    plt.figure()
+    plt.title('Histogram of roles changes')
+    dictionary = model.role_changes_from
+    print(dictionary)
+    plt.bar(dictionary.keys(), dictionary.values(), width=1, color='g')
+    plt.xticks(rotation=90)
+
+

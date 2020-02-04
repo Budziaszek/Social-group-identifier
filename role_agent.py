@@ -45,13 +45,13 @@ class RoleAgent(Agent):
             else:
                 self.check_criteria(user, self.dictionary)
         if self.role in roles_influence:
-            num_of_users = floor(len(RoleAgent.group.group_members) / (len(roles_influence) * 1.5))
+            num_of_users = floor(len(RoleAgent.group.group_members) / (len(roles_influence)))
         elif self.role in roles_neighbors:
-            num_of_users = floor(len(RoleAgent.group.group_members) / (len(roles_neighbors) * 1.5))
+            num_of_users = floor(len(RoleAgent.group.group_members) / (len(roles_neighbors)))
         elif self.role in roles_activities:
-            num_of_users = floor(len(RoleAgent.group.group_members) / (len(roles_activities) * 1.5))
+            num_of_users = floor(len(RoleAgent.group.group_members) / (len(roles_activities)))
         else:
-            num_of_users = floor(len(RoleAgent.group.group_members) / (len(roles_attitude) * 1.5))
+            num_of_users = floor(len(RoleAgent.group.group_members) / (len(roles_attitude)))
         if num_of_users == 0:
             return
         self.selected = sorted(self.dictionary, key=self.dictionary.get)[0:num_of_users]

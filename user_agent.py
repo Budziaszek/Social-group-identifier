@@ -25,6 +25,7 @@ class UserAgent(Agent):
         self._influence = influence
         self._friends = set()
         self._roles = defaultdict(list)
+        self._arch_roles = defaultdict(list)
         self._actions = {"write_comment": self.write_comment_to_post,
                          "write_post": self.write_post,
                          "react": self.react_to_post,
@@ -44,7 +45,7 @@ class UserAgent(Agent):
         self.number_of_neighbors_outside_the_group = None
 
     def reset(self):
-        # TODO reset for next simulation step
+        self._arch_roles = self._roles.copy()
         self._roles = defaultdict(list)
         for key in self._relations:
             self._relations[key] *= self.relation_update_rate
@@ -139,11 +140,27 @@ class UserAgent(Agent):
 
     def add_role(self, role, group):
         self._roles[group.unique_id].append(role)
+        self.model.roles_count[role][-1] += 1
+        if group.unique_id in self._arch_roles.keys():
+            if role not in self._arch_roles[group.unique_id]:
+                key = self.get_old_role_from_same_type(group.unique_id, role)[0:3] + "-" + role[0:3]
+                if key not in self.model.role_changes_from:
+                    self.model.role_changes_from[key] = 0
+                self.model.role_changes_from[key] += 1
 
     def get_role_from_type(self, group, roles_category_array):
         for role in roles_category_array:
             if role in self._roles[group]:
                 return role
+        return "Normal"
+
+    def get_old_role_from_same_type(self, group, role):
+        categories = [roles_influence, roles_attitude, roles_activities, roles_neighbors]
+        for category in categories:
+            if role in category:
+                for r in self._arch_roles[group]:
+                    if r in category:
+                        return r
         return "Normal"
 
     def present_roles(self):

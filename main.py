@@ -13,6 +13,7 @@ for step in range(NUMBER_OF_STEPS):
     print("_____________SIMULATION_" + str(step) + "_____________")
     for i in range(NUMBER_OF_SIMULATION_STEPS):
         model.step()
+        model.add_new_users()
         print(f"\rCurrent progress {(i + 1) / NUMBER_OF_SIMULATION_STEPS * 100}%..", end="")
 
     # check_number_of_friends_distribution(model)

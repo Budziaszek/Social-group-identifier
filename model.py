@@ -1,5 +1,6 @@
 import math
 import random
+from collections import defaultdict
 from copy import deepcopy
 import numpy as np
 from mesa import Model
@@ -35,6 +36,12 @@ class SiteModel(Model):
         self.groups = []
         self.curr_user_id = 0
         self.negotiations = {}
+        self.roles_count = defaultdict(list)
+        self.curr_iteration = 0
+        self.role_changes_from = {}
+
+        for role in roles:
+            self.roles_count[role] = []
 
         # Create users
         for i in range(num_agents):
@@ -73,7 +80,6 @@ class SiteModel(Model):
     def step(self):
         self.data_collector.collect(self)
         self.schedule.step()
-        self.add_new_users()
 
     def step_groups(self):
         self.data_group_collector.collect(self)
@@ -100,6 +106,8 @@ class SiteModel(Model):
         return z
 
     def assign_roles_init(self, groups):
+        for role in roles:
+            self.roles_count[role].append(0)
         # Create role agents
         for i, role in enumerate(roles):
             role_agent = RoleAgent(self.increment_curr_user_id(), role, self)
@@ -118,9 +126,9 @@ class SiteModel(Model):
                     self.negotiations[key] = self.merge_two_dicts(self.negotiations[key], new_dict[key])
                 else:
                     self.negotiations[key] = new_dict[key]
-        # for key in self.negotiations:
-        #     print(key, self.negotiations[key])
-        # print()
+        for role in roles:
+            self.roles_count[role][self.curr_iteration] /= sum([len(group.group_members) for group in self.groups])
+        self.curr_iteration += 1
 
     def check_roles_combinations(self):
         possible_combinations = list(combinations(roles, 2))
@@ -130,7 +138,4 @@ class SiteModel(Model):
                 for user in group.group_members:
                     if key[0] in user.get_roles(group.unique_id) and key[1] in user.get_roles(group.unique_id):
                         counter[key] += 1
-        # print("ROLES COMBINATIONS")
-        # for key in counter:
-        #     print(key, counter[key])
         return counter
