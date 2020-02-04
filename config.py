@@ -1,7 +1,7 @@
 """This file should include only configuration values which can be parameterized for simulation"""
 import math
 
-NUMBER_OF_STEPS = 10
+NUMBER_OF_STEPS = 2
 
 # User consts
 INITIAL_RELATION_VALUE = 1
