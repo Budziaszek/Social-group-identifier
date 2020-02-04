@@ -1,4 +1,5 @@
 """This file should include only configuration values which can be parameterized for simulation"""
+import math
 
 NUMBER_OF_STEPS = 10
 
@@ -7,13 +8,13 @@ INITIAL_RELATION_VALUE = 1
 RELATION_DECAY_PER_CYCLE = 0.9
 MIN_CHANCE_FOR_FRIENDS = 0.30
 
-
 # Simulation consts
 NUMBER_OF_USERS = 1000
+MAX_NUMBER_OF_NEW_USERS = math.ceil(NUMBER_OF_USERS/500) + 1
 NUMBER_OF_SIMULATION_STEPS = 10
-MAX_NUMBER_OF_GROUPS = 10
 
 # Group consts
+MAX_NUMBER_OF_GROUPS = 10
 NUMBER_OF_GROUP_STEPS = 10
 NUMBER_OF_INIT_TRIES = 10
 MIN_GROUP_CONSISTENCY = 0.1

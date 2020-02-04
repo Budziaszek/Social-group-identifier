@@ -8,7 +8,7 @@ from mesa.datacollection import DataCollector
 from itertools import combinations
 
 from role_agent import RoleAgent
-from config import NUMBER_OF_USERS
+from config import NUMBER_OF_USERS, MAX_NUMBER_OF_NEW_USERS
 from utils import define_user_interests, define_user_actions_probabilities
 from user_agent import UserAgent
 from role_types import roles
@@ -80,7 +80,7 @@ class SiteModel(Model):
         self.schedule_groups.step()
 
     def add_new_users(self):
-        num_agents = random.choice([i for i in range(math.ceil(NUMBER_OF_USERS / 500) + 1)])
+        num_agents = random.choice([i for i in range(MAX_NUMBER_OF_NEW_USERS)])
         # Create users
         for i in range(num_agents):
             user = UserAgent(self.increment_curr_user_id(),

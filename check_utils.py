@@ -23,6 +23,7 @@ from consts import TAGS
 #                   xlabel="Number of friends for each user",
 #                   ylabel="Number of users with y friends")
 
+
 def check_influence_distribution(model):
     agent_data = [a.get_influence() for a in model.schedule.agents]
     plt.hist(agent_data)
