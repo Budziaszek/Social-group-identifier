@@ -3,7 +3,7 @@ from collections import defaultdict
 from user_agent import UserAgent
 import matplotlib.pyplot as plt
 from role_types import get_name, roles_influence, roles_neighbors, roles_activities, roles_attitude
-from config import MAX_GROUP_MEMBERS
+from config import MAX_GROUP_MEMBERS, CURR_MODE, MODE_WITH_NEGOTIATIONS
 
 
 def get_number_of_groups(model):
@@ -46,7 +46,8 @@ def plot_stats(model):
     plot_group_size_distribution(model)
     plot_post_written(model)
     plot_roles_histogram(model)
-    plot_roles_negotiations_histogram(model)
+    if CURR_MODE is MODE_WITH_NEGOTIATIONS:
+        plot_roles_negotiations_histogram(model)
     plot_roles_combinations_histogram(model)
     plot_roles_changes(model)
     plot_roles_changes_histogram(model)

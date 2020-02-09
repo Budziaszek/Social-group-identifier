@@ -9,7 +9,7 @@ from mesa.datacollection import DataCollector
 from itertools import combinations
 
 from role_agent import RoleAgent
-from config import NUMBER_OF_USERS, MAX_NUMBER_OF_NEW_USERS
+from config import NUMBER_OF_USERS, MAX_NUMBER_OF_NEW_USERS, CURR_MODE, MODE_WITH_NEGOTIATIONS
 from utils import define_user_interests, define_user_actions_probabilities
 from user_agent import UserAgent
 from role_types import roles
@@ -120,12 +120,13 @@ class SiteModel(Model):
             RoleAgent.calculate_parameters(group)
             for agent in self.role_agents:
                 agent.determine_users_roles()
-            new_dict = RoleAgent.negotiate(self.role_agents, self.users)
-            for key in new_dict:
-                if key in self.negotiations:
-                    self.negotiations[key] = self.merge_two_dicts(self.negotiations[key], new_dict[key])
-                else:
-                    self.negotiations[key] = new_dict[key]
+            if CURR_MODE is MODE_WITH_NEGOTIATIONS:
+                new_dict = RoleAgent.negotiate(self.role_agents, self.users)
+                for key in new_dict:
+                    if key in self.negotiations:
+                        self.negotiations[key] = self.merge_two_dicts(self.negotiations[key], new_dict[key])
+                    else:
+                        self.negotiations[key] = new_dict[key]
         for role in roles:
             self.roles_count[role][self.curr_iteration] /= sum([len(group.group_members) for group in self.groups])
         self.curr_iteration += 1
